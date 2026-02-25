@@ -10,5 +10,5 @@ class Profile(models.Model):
     email = models.EmailField(max_length=254)
     mobile_regex = RegexValidator(regex=r'^(\+\d{1,3})?,?\s?\d{8,13}$', message="Phone number must not consist of space and requires country code. eg : +6591258565")
     mobile_number = models.CharField(max_length=17, validators=[mobile_regex])
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, upload_to='profile_pictures/')
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 

@@ -5,5 +5,4 @@ from .views import ProfileUpdateView
 urlpatterns = [
     path('<int:pk>', ProfileUpdateView.as_view(), name='profile-form'),
 ]
-
 app_name = 'user_management'
