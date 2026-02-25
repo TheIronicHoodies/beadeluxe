@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses</title>
+</head>
+<body>
+    <h1>Courses:</h1>
+    <ul>
+        {% for course in courses %}
+        
+        <li>
+            <a href="{{ course.id }}">{{ course }}</a>
+        </li>
+        {% comment %}
+        <li>{{ course }}</li>
+        <li>
+            <a href="{{ course.get_absolute_url }}"> {{ course }}</a>
+        </li>
+        {% endcomment %}
+        
+        {% endfor %}
+    </ul>
+</body>
+</html>
