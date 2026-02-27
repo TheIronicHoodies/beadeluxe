@@ -5,10 +5,19 @@
 {% block title %} {{ profile.fullname }} {% endblock %}
 
 {% block content %}
-    <p> {{ profile.profile_picture }}</p>
+{% if profile.profile_picture %}
+    <img src="{{ profile.profile_picture.url }}" 
+         alt="Profile Picture"
+         style="width:320px; height:320px; border:2px solid #000; object-fit:cover;">
+{% else %}
+    <img src="{% static 'images/default.jpg' %}" 
+         alt="Default Profile Picture"
+         style="width:320px; height:320px; border:2px solid #000; object-fit:cover;">
+{% endif %}
     <p> Full Name: {{ profile.fullname }}</p>
     <p> Nickname: {{ profile.nickname }}</p>
     <p> Pronouns: {{ profile.pronouns }}</p>
     <p> Email: {{ profile.email }}</p>
     <p> Mobile Number: {{ profile.mobile_number }}</p>
+    <button onclick="history.back()">Back</button>
 {% endblock %}

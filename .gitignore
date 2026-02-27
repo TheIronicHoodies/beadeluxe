@@ -2,3 +2,5 @@
 **/**.pyc
 **/__pycache__
 db.sqlite3
+beadeluxe/db.sqlite3
+beadeluxe/media/profile_pictures

@@ -128,7 +128,7 @@ STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = '/'       
 LOGOUT_REDIRECT_URL = '/'  
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'    
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/'media' 

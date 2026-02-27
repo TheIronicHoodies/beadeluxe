@@ -23,7 +23,8 @@
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit">Logout</button><br>
-                <a href="{% url 'user_management:profile-update' username=user.username%}">Update Profile</a>
+                <a href="{% url 'user_management:profile-update' username=user.username%}">Update Profile</a><br>
+                <a href="{% url 'user_management:profile-view' username=user.username%}">View Profile</a><br>
             </form>
         {% else %}
             <a href="{% url 'user_management:profile-create' %}">Create a New User</a> <br>
