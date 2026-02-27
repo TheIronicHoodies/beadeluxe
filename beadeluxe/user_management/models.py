@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator   
 
 class Profile(models.Model):
+    """Instantiate fields for user profile."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     fullname = models.CharField(max_length=46)
     nickname = models.CharField(max_length=20)
