@@ -29,8 +29,10 @@
                 <a href="{% url 'user_management:profile-view' username=user.username%}">View Profile</a><br>
             </form>
         {% else %}
-            <a href="{% url 'user_management:profile-create' %}">Create a New User</a> <br>
-            <a href="{% url 'login' %}">Login</a>
+            <div id="user-reg">
+                <a href="{% url 'user_management:profile-create' %}">Create a New User</a> <br>
+                <a href="{% url 'login' %}">Login</a>
+            </div>
         {% endif %} 
     </header>
     <body>

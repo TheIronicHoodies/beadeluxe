@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Access Forbidden {% endblock %}
+
+{% block content %}
+<main>
+    <p>Access forbidden.</p>
+    <p>If you think there's a mistake, try <a href="{% url 'user_management:profile-create' %}">logging in</a> again
+    or <a href="{% url 'password_reset' %}">resetting your password</a>.</p>
+</main>
+{% endblock %}

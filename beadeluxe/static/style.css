@@ -10,8 +10,8 @@
 }
 .col {
     border: 1px solid gray;
-    border-radius: 10px;
-    margin: 10px;
+    border-radius: 1em;
+    margin: 1em;
     flex: 1 1 30vw;
     /* flex: 1 1 90vw; */
     /* flex: 0 1 30vw; */
@@ -27,6 +27,25 @@ a, a:visited {
 }
 body {
     background-color: aliceblue;
+}
+form button {
+    background-color: none;
+    border: 1px solid gray;
+    border-radius: 1em;
+    margin: 0 1em;
+    padding: 0.5em 1em;
+}
+form div {
+    display: flex;
+    flex-direction: column;
+    margin: 1em;
+}
+form div .helptext {
+    font-style: italic;
+    font-size: 0.75em;
+}
+form div input {
+    width: 25vh;
 }
 header {
     align-items: center;
@@ -73,6 +92,19 @@ section {
     width: fit-content;
     height: 100%;
     width: 20vw;
+}
+
+#user-reg {
+    align-items: center;
+    display:flex;
+    flex-direction: column;
+}
+
+#user-reg a {
+    background-color: aliceblue;
+    border: none;
+    border-radius: 1em;
+    padding: 1em;
 }
 
 #vertical_dvd {

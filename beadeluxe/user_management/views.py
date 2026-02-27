@@ -19,7 +19,7 @@ class UserCreateView(CreateView):
     """
     model = User
     form_class = CustomUserCreationForm
-    template_name = 'profile_user_create.html'
+    template_name = 'user-management/profile_user_create.html'
 
     def get_success_url(self):
         return reverse_lazy('home')
@@ -43,7 +43,7 @@ class ProfileForbiddenView(TemplateView):
     """
     Class for the Profile Forbidden View
     """
-    template_name = 'profile_forbidden.html'
+    template_name = 'user-management/profile_forbidden.html'
 
 
 class ProfileUpdateView(UpdateView, LoginRequiredMixin):
@@ -56,7 +56,7 @@ class ProfileUpdateView(UpdateView, LoginRequiredMixin):
     form_class = ProfileForm
     slug_field = "username__username"
     slug_url_kwarg = "username"
-    template_name = 'profile_form.html'
+    template_name = 'user-management/profile_form.html'
 
     def get_success_url(self):
         return reverse_lazy('home')
@@ -88,6 +88,6 @@ class ProfileUpdateView(UpdateView, LoginRequiredMixin):
         
 class ProfileDetailView(DetailView):
     model = Profile
-    template_name = "profile.html"
+    template_name = "user-management/profile.html"
     slug_field = "user__username"        # field in your model
     slug_url_kwarg = "username"    # matches the URL pattern
