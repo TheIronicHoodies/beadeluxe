@@ -13,14 +13,6 @@ class Profile(models.Model):
     mobile_number = models.CharField(max_length=17, validators=[mobile_regex])
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
-    ROLE_CHOICES = [
-        ("student", "Student"),
-        ("beadle", "Beadle"),
-        ("prof", "Professor"),
-        ("admin", "Admin"),
-    ]
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="student")
-
     def __str__(self):
         return self.fullname
     

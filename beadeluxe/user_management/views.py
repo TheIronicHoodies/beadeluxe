@@ -30,7 +30,6 @@ class UserCreateView(CreateView):
 
         profile = Profile()
         profile.user = user
-        profile.name = user.username
         profile.email = user.email
         profile.save()
         return super().form_valid(form)
