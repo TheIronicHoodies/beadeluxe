@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{% block title %}Title{% endblock %}</title>
+        {% block styles %}{% endblock %}
+    </head>
+    <header>
+        <h1>Beadeluxe</h1>
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %} 
+
+        <h2>
+            {% block header %}{% endblock %}
+        </h2>
+    </header>
+    <body>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
