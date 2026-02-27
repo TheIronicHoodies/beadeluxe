@@ -1,27 +1,13 @@
 from django.shortcuts import render
-from .models import Course
-
-# Create your views here.
-# Function-based version
-# def course_list(request):
-#     courses = Course.objects.all()
-#     ctx = {
-#         "courses": courses
-#     }
-
-#     return render(request, 'courses/course_list.html', ctx)
-
-# def course_detail(request, id):
-#     course = Course.objects.get(id=id)
-#     ctx = {'course' : Course.objects.get(id=id)}
-#     # ctx = {'course' : course}
-#     return render(request, 'courses/course_detail.html', ctx)
-
-
-# Class-based version
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView
 
+from .models import Course
+from .forms import CourseForm
+
+# Create your views here.
+# Class-based version
 class CourseListView(ListView):
     model = Course
     template_name = 'courses/course_list.html'
@@ -34,6 +20,16 @@ class CourseListView(ListView):
 
         return self.get(request, *args, **kwargs)
 
+
 class CourseDetailView(DetailView):
     model = Course
     template_name = 'courses/course_detail.html'
+
+
+class CourseCreateView(CreateView):
+    model = Course
+    form_class = CourseForm
+    template_name = 'courses/course_create.html'
+
+    def post(self, request, *args, **kwargs):
+        course_form = CourseForm(request.POST)
