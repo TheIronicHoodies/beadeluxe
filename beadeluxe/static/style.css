@@ -1,0 +1,30 @@
+* {
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.col {
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 10px;
+    flex: 1 1 30vw;
+    /* flex: 1 1 90vw; */
+    /* flex: 0 1 30vw; */
+    /* flex: initial; */
+    display: flex;
+    flex-direction: column;
+    /* max-width: 30vw; */
+    /* min-width: 10px; */
+}
+img{
+    width: 100%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+section {
+    display: flex;
+    justify-content: space-between;
+}

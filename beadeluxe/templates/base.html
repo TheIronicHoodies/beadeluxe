@@ -4,9 +4,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{% block title %}Title{% endblock %}</title>
         {% block styles %}{% endblock %}
+        <link rel="stylesheet" type="text/css" href=" {% static 'style.css' %} ">
     </head>
     <header>
-        <h1>Beadeluxe</h1>
+        <marquee behavior="alternate" direction="down" id="vertical_dvd">
+                <marquee behavior="alternate" direction="">
+                    <a href="{% url 'home' %}" id="app_title" class="strong">
+                        {% if request.resolver_match.app_name and request.resolver_match.app_name != 'user_management' %}
+                            {{request.resolver_match.app_name}}
+                        {% else %}
+                            <h1>Beadeluxe</h1>
+                        {% endif %}
+                    </a>
+                </marquee>
+            </marquee>
         {% if user.is_authenticated %}
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}

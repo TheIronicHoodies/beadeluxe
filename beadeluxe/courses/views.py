@@ -10,7 +10,7 @@ from .forms import CourseForm
 # Class-based version
 class CourseListView(ListView):
     model = Course
-    template_name = 'courses/course_list.html'
+    template_name = 'course_list.html'
 
     def post(self, request, *args, **kwargs):
         c = Course()
@@ -23,13 +23,13 @@ class CourseListView(ListView):
 
 class CourseDetailView(DetailView):
     model = Course
-    template_name = 'courses/course_detail.html'
+    template_name = 'course_detail.html'
 
 
 class CourseCreateView(CreateView):
     model = Course
     form_class = CourseForm
-    template_name = 'courses/course_create.html'
+    template_name = 'course_create.html'
 
     def post(self, request, *args, **kwargs):
         course_form = CourseForm(request.POST)
