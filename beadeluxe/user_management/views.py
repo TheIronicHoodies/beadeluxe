@@ -85,7 +85,7 @@ class ProfileUpdateView(UpdateView, LoginRequiredMixin):
             p.profile_picture = request.FILES.get('profile_picture')
             p.save()
 
-            return redirect(reverse_lazy('home:homepage'))
+            return redirect(reverse_lazy('home'))
         else:
             self.object_list = self.get_queryset()
             context = self.get_context_data(**kwargs)

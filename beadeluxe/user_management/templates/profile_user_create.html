@@ -2,10 +2,10 @@
 
 {% load static %}
 
-{% block title %} {{ user.username }} {% endblock %}
+{% block title %} Profile Creation {% endblock %}
 
 {% block content %}
-    <h3> Welcome, {{ user.username }} !</h3>
+    <h3> Create a New User </h3>
     <form method="POST">
         {% csrf_token %}
         {{ form }}
