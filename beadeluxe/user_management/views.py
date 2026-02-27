@@ -1,8 +1,9 @@
 """This file sets up the views for the user_management app."""
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic import DetailView
+
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile
@@ -30,6 +31,7 @@ class UserCreateView(CreateView):
 
         profile = Profile()
         profile.user = user
+        profile.name = user.username
         profile.email = user.email
         profile.save()
         return super().form_valid(form)

@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'courses',
     'user_management',
+    'accounts',
+    'home',
 ]
 
 MIDDLEWARE = [
@@ -127,10 +129,11 @@ STATICFILES_DIRS = [
 STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = '/'       
-LOGOUT_REDIRECT_URL = '/'  
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+LOGOUT_REDIRECT_URL = '/accounts/login/'  
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'    
 
-MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/'media' 
+MEDIA_URL = '/media/'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
