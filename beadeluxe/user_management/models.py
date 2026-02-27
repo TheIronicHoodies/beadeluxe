@@ -12,3 +12,5 @@ class Profile(models.Model):
     mobile_number = models.CharField(max_length=17, validators=[mobile_regex])
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
+    def __str__(self):
+        return self.name

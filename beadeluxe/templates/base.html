@@ -6,7 +6,7 @@
         {% block styles %}{% endblock %}
     </head>
     <header>
-        <h1>Hobby Site</h1>
+        <h1>Beadeluxe</h1>
         {% if user.is_authenticated %}
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}

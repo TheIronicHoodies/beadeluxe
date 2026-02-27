@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
-# load_dotenv()
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,8 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-# SECRET_KEY = os.getenv('SECRET_KEY')
-SECRET_KEY = 'django-insecure-a@+0fyl3!ssu_*4@92f%@(&%_i_8jxrbvqqug-j+v-(4f^_%-z'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -120,10 +119,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
+
 STATICFILES_DIRS = [
     BASE_DIR/'static',
 ]
 STATIC_URL = 'static/'
+
+LOGIN_REDIRECT_URL = '/'       
+LOGOUT_REDIRECT_URL = '/'  
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'    
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/'media' 
