@@ -2,9 +2,10 @@
 
 {% load static %}
 
-{% block title %} {{ profile.name }} {% endblock %}
+{% block title %} {{ profile.fullname }} {% endblock %}
 
 {% block content %}
+    <p> {{ profile.profile_picture }}</p>
     <p> Full Name: {{ profile.fullname }}</p>
     <p> Nickname: {{ profile.nickname }}</p>
     <p> Pronouns: {{ profile.pronouns }}</p>

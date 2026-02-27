@@ -12,7 +12,11 @@
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
+            <br>
+            <a href="{% url 'user_management:profile-update' username=user.username%}">Update Profile</a>
         {% else %}
+            <a href="{% url 'user_management:profile-create' %}">Create a New User</a>
+            <br>
             <a href="{% url 'login' %}">Login</a>
         {% endif %} 
 
