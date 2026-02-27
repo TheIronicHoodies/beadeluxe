@@ -3,7 +3,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 
-from .models import Course
+from .models import Course, CourseUser
 from .forms import CourseForm
 
 # Create your views here.
@@ -18,6 +18,13 @@ class CourseListView(ListView):
         c.code = request.POST.get('course_code')
         c.save()
 
+        #Whoever created the course is beadle
+        if request.user.is_authenticated:
+            cu = CourseUser()
+            cu.course = c
+            cu.user = request.user
+            cu.role = "beadle"
+            cu.save()
         return self.get(request, *args, **kwargs)
 
 
