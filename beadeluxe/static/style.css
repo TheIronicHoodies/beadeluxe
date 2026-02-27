@@ -87,11 +87,33 @@ section {
     justify-content: center;
 }
 
+.create-form {
+    display: flex;
+    flex-direction: column;
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    form label {
+        padding: 1em;
+    }
+
+    form input {
+        width: 25vw;
+    }
+}
+
 #app-title {
     padding: 0;
     width: fit-content;
     height: 100%;
     width: 20vw;
+}
+
+#not-found {
+    font-size: 4em;
 }
 
 #user-reg {
