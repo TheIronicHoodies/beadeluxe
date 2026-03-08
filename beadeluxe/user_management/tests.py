@@ -108,5 +108,28 @@ class PasswordResetTest(TestCase):
 
         login_success = self.client.login(username="collin", password="newsecret123")
         self.assertTrue(login_success)
-
-
+        
+class ProfileViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="collin",
+            password="secret123"
+        )
+        self.profile = Profile.objects.create(
+            user=self.user,
+            fullname="Collin Harper",
+            nickname="Collin",
+            pronouns="he/him",
+            email="collin@example.com",
+            mobile_number="+6591258565"
+        )
+    def test_profile_view(self):
+        self.client.login(username="collin", password="secret123")
+        response = self.client.get(reverse("profile"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Collin Harper")
+        self.assertContains(response, "Collin")
+        self.assertContains(response, "he/him")
+        self.assertContains(response, "collin@example.com")
+        self.assertContains(response, "+6591258565")
+        
