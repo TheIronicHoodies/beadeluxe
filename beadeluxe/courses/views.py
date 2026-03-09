@@ -53,6 +53,7 @@ class CourseDetailView(DetailView):
         course = Course.objects.get(pk=self.kwargs.get('pk'))
         user = self.request.user
         ctx["object"] = CourseUser.objects.get(user=user, course=course)
+        ctx["students"] = CourseUser.objects.filter(course=course, role='student')
         return ctx
 
 

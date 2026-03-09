@@ -9,8 +9,8 @@
         <h2>{{ object.course.code }}</h2>
         <p><a href="..">Back to Course List</a></p>
 
-        <p>{{ object.role }}</p>
         {% if object.role == 'beadle' %}
+            <p>Add a Member</p>
             <form action="" method="post">
                 {% csrf_token %}
                 <label for="email">
@@ -26,6 +26,18 @@
                     </select>
                 </label>
                 <input type="submit" value="Submit">
+            </form>
+
+            <p>Assign a beadle</p>
+            <form action="" method="post">
+                <span>Student:</span>
+                <select name="beadle" id="beadle">
+                    <option value="" disabled selected hidden>-- Select an option --</option>
+                    {% for student in students %}
+                        <option value="{{ student }}">{{ student }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Assign">
             </form>
         {% endif %}
     </main>
