@@ -1,15 +1,15 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
 
-from .models import Profile
+CustomUser = get_user_model()
 
-class ProfileInline(admin.StackedInline):
-    model = Profile
-    can_delete = False
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('fullname', 'nickname', 'pronouns', 'mobile_number', 'profile_picture')}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('fullname', 'nickname', 'pronouns', 'mobile_number', 'profile_picture')}),
+    )
 
-class UserAdmin(BaseUserAdmin):
-    inlines = [ProfileInline,]
-
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
