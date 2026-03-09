@@ -28,8 +28,6 @@ class UserCreateView(CreateView):
             form.add_error('email', "Email must be from @ateneo.edu or @student.ateneo.edu")
         return super().form_invalid(form)
 
-
-
 class ProfileForbiddenView(TemplateView):
     """
     Class for the Profile Forbidden View
