@@ -1,0 +1,138 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 1em;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.col {
+    border: 1px solid gray;
+    border-radius: 1em;
+    margin: 1em;
+    flex: 1 1 30vw;
+    /* flex: 1 1 90vw; */
+    /* flex: 0 1 30vw; */
+    /* flex: initial; */
+    display: flex;
+    flex-direction: column;
+    /* max-width: 30vw; */
+    /* min-width: 10px; */
+}
+a, a:visited {
+    color: blue;
+    text-decoration: none;
+}
+body {
+    background-color: aliceblue;
+}
+form button {
+    background-color: none;
+    border: 1px solid gray;
+    border-radius: 1em;
+    margin: 0 1em;
+    padding: 0.5em 1em;
+}
+form div {
+    display: flex;
+    flex-direction: column;
+    margin: 1em;
+}
+form div .helptext {
+    font-style: italic;
+    font-size: 0.75em;
+}
+form div input {
+    width: 25vh;
+}
+header {
+    align-items: center;
+    background-color: #08f;
+    border-bottom: 1px solid white;
+    display: flex;
+    flex-direction: row;
+    height: 20vh;
+    justify-content: space-between;
+    padding: 1em;
+}
+img{
+    width: 100%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+marquee {
+    height: fit-content;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+marquee h1 {
+    color: gold;
+    margin: 0;
+}
+section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.strong {
+    font-weight: bold !important;
+}
+
+.logout {
+    align-items: center;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+}
+
+.create-form {
+    display: flex;
+    flex-direction: column;
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    form label {
+        padding: 1em;
+    }
+
+    form input {
+        width: 25vw;
+    }
+}
+
+#app-title {
+    padding: 0;
+    width: fit-content;
+    height: 100%;
+    width: 20vw;
+}
+
+#not-found {
+    font-size: 4em;
+}
+
+#user-reg {
+    align-items: center;
+    display:flex;
+    flex-direction: column;
+}
+
+#user-reg a {
+    background-color: aliceblue;
+    border: none;
+    border-radius: 1em;
+    padding: 1em;
+}
+
+#vertical_dvd {
+    border: 1px solid white;
+    display: block;
+    height: 100%;
+    width: 20vw;
+}
+

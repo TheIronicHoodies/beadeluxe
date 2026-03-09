@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<main>
+    Welcome to Beadeluxe, your one-of-a-kind beadle management system!
+    <ul>
+        <li><a href="{% url 'courses:course_list' %}">Courses</a></li>
+    </ul>
+</main>
+{% endblock %}
