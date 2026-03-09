@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <section>
+        <h1>Courses</h1>
+        <p>Add a course</p>
+
+        <form action="{% url 'courses:course_list' %}" method="post">
+            {% csrf_token %}
+            <label for="course_name">
+                <span>Course Name:</span>
+                <input type="text" id="course_name" name="course_name">
+            </label>
+            <label for="course_code">
+                <span>Course Code:</span>
+                <input type="text" id="course_code" name="course_code">
+            </label>
+            <input type="submit" value="Submit">
+        </form>
+    </section>
+    
+    <main class="container">
+        {% comment %}
+        {% for course in courses %}
+        {% endcomment %}
+
+        {% for course in object_list%}
+        <div class="col">
+            <a href="#">
+                <img src="https://placehold.co/600x400" alt="Some sample words">
+            </a>
+            <h2>
+                <a href="{{ course.pk }}">{{ course }}</a>
+            </h2>
+        </div>
+        {% comment %}
+        <a href="{{ course.get_absolute_url }}"> {{ course }}</a>
+        {% endcomment %}
+        
+        {% endfor %}
+    </main>
+{% endblock %}

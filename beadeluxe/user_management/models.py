@@ -15,4 +15,6 @@ class Profile(models.Model):
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
     def __str__(self):
-        return self.nickname or self.user.username
+        return self.fullname
+    
+    

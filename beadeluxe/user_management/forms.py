@@ -29,3 +29,10 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['fullname', 'nickname', 'pronouns', 'email', 'mobile_number', 'profile_picture']
+        widgets = {
+            'fullname': forms.TextInput(attrs={'class': 'form-control'}),
+            'nickname': forms.TextInput(attrs={'class': 'form-control'}),
+            'pronouns': forms.Select(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'mobile_number': forms.TextInput(attrs={'class': 'form-control'}),
+        }
