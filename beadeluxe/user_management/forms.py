@@ -1,38 +1,36 @@
 from django import forms
-from .models import Profile
-
-"""This file sets up the forms for the user_management app."""
-from django import forms
-from .models import Profile
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+
+User = get_user_model()
 
 class CustomUserCreationForm(UserCreationForm):
     """
-    Class for the Custom User Creation Form.
-
-    Contains the fields 'email', 'username', 'password1' and 'password2' 
+    Form for creating a new CustomUser.
+    Includes 'email', 'username', 'password1', and 'password2'.
     """
     email = forms.EmailField(required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = [
+            'username',
+            'email',
+            'fullname',
+            'nickname',
+            'pronouns',
+            'mobile_number',
+            'profile_picture',
+            'password1',
+            'password2',
+        ]
+
 
 
 class ProfileForm(forms.ModelForm):
     """
-    Class for the Profile Form.
-
-    Contains the field 'name'
+    Form for updating a CustomUser's profile fields.
     """
     class Meta:
-        model = Profile
-        fields = ['fullname', 'nickname', 'pronouns', 'email', 'mobile_number', 'profile_picture']
-        widgets = {
-            'fullname': forms.TextInput(attrs={'class': 'form-control'}),
-            'nickname': forms.TextInput(attrs={'class': 'form-control'}),
-            'pronouns': forms.Select(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'mobile_number': forms.TextInput(attrs={'class': 'form-control'}),
-        }
+        model = User  
+        fields = ['fullname', 'nickname', 'pronouns', 'mobile_number', 'profile_picture']

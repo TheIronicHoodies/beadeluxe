@@ -1,10 +1,10 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
-from .models import Profile
 from django.urls import reverse
 from django.core import mail
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 """Class for testing registration of user"""
 class RegistrationTest(TestCase):
@@ -26,46 +26,45 @@ class CredentialTest(TestCase):
             username="collin",
             password="secret123"
         )
-    def credentials_valid(self):
-        profile = Profile(
-            user=self.user,
+
+    def test_credentials_valid(self):
+        user = User(
+            username="collin2",
             fullname="Collin Harper",
             nickname="Collin",
             pronouns="he/him",
             email="collin@example.com",
             mobile_number="+6591258565"
         )
-        profile.full_clean()
-        profile.save()
-        self.assertEqual(profile.fullname, "Collin Harper")
-        self.assertEqual(profile.nickname, "Collin")
-        self.assertEqual(profile.pronouns, "he/him")
-        self.assertEqual(profile.email, "collin@example.com")
-        self.assertEqual(profile.mobile_number, "+6591258565")
-        self.assertEqual(str(profile), "Collin Harper")
-        self.assertEqual(profile.user.username, "collin")
+        user.full_clean()
+        user.save()
+        self.assertEqual(user.fullname, "Collin Harper")
+        self.assertEqual(user.nickname, "Collin")
+        self.assertEqual(user.pronouns, "he/him")
+        self.assertEqual(user.email, "collin@example.com")
+        self.assertEqual(user.mobile_number, "+6591258565")
+        self.assertEqual(str(user), "Collin Harper")
 
-    def credentials_invalid(self):
-        profile = Profile(
-            user=self.user,
+    def test_credentials_invalid(self):
+        user = User(
+            username="bobsmith",
             fullname="Bob Smith",
             nickname="Bob",
             pronouns="he/him",
             email="bob@example.com",
-            mobile_number="91258 565"
+            mobile_number="91258 565"  # invalid format
         )
         with self.assertRaises(ValidationError):
-            profile.full_clean() 
-            
-    def profile_picture_added(self):
+            user.full_clean()
+
+    def test_profile_picture_added(self):
         image = SimpleUploadedFile(
             name="test_image.jpg",
             content=b"file_content",
             content_type="image/jpeg"
         )
-
-        profile = Profile.objects.create(
-            user=self.user,
+        user = User.objects.create(
+            username="collin3",
             fullname="Collin Harper",
             nickname="Collin",
             pronouns="he/him",
@@ -73,8 +72,9 @@ class CredentialTest(TestCase):
             mobile_number="+6591258565",
             profile_picture=image
         )
-        self.assertTrue(profile.profile_picture)
-        self.assertIn("test_image.jpg", profile.profile_picture.name)
+        self.assertTrue(user.profile_picture)
+        self.assertIn("test_image.jpg", user.profile_picture.name)
+
 
 """Class for testing if password reset flow works as expected"""
 class PasswordResetTest(TestCase):
@@ -85,12 +85,12 @@ class PasswordResetTest(TestCase):
             password="secret123"
         )
 
-    def password_reset_flow(self):
+    def test_password_reset_flow(self):
         response = self.client.post(
             reverse("password_reset"),
             {"email": "collin@example.com"}
         )
-        self.assertEqual(response.status_code, 302) 
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn("collin@example.com", mail.outbox[0].to)
 
@@ -104,9 +104,32 @@ class PasswordResetTest(TestCase):
             "new_password1": "newsecret123",
             "new_password2": "newsecret123",
         })
-        self.assertEqual(response.status_code, 302)  
+        self.assertEqual(response.status_code, 302)
 
         login_success = self.client.login(username="collin", password="newsecret123")
         self.assertTrue(login_success)
 
 
+class ProfileViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="collin",
+            password="secret123",
+            fullname="Collin Harper",
+            nickname="Collin",
+            pronouns="he/him",
+            email="collin@example.com",
+            mobile_number="+6591258565"
+        )
+
+    def test_profile_view(self):
+        self.client.login(username="collin", password="secret123")
+        response = self.client.get(reverse("profile"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Collin Harper")
+        self.assertContains(response, "Collin")
+        self.assertContains(response, "he/him")
+        self.assertContains(response, "collin@example.com")
+        self.assertContains(response, "+6591258565")
+
+        
