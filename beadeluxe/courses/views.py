@@ -26,6 +26,12 @@ class CourseListView(ListView):
             cu.role = "beadle"
             cu.save()
         return self.get(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        ctx = super(CourseListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        ctx["object_list"] = CourseUser.objects.filter(user=user)
+        return ctx
 
 
 class CourseDetailView(DetailView):

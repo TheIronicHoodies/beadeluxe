@@ -32,6 +32,9 @@ class CourseUser(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     role = models.CharField(max_length=20, choices=ROLES)
 
+    def __str__(self):
+        return self.user.fullname
+    
     class Meta:
             constraints = [
         models.UniqueConstraint(fields=['user', 'course'], name='unique_user_course')
