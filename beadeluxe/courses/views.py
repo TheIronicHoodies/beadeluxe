@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
+from django.contrib.auth import get_user_model
 
 from .models import Course, CourseUser
 from .forms import CourseForm
@@ -35,8 +36,24 @@ class CourseListView(ListView):
 
 
 class CourseDetailView(DetailView):
-    model = Course
+    model = CourseUser
     template_name = 'course_detail.html'
+
+    def post(self, request, *args, **kwargs):
+        cu = CourseUser()
+        cu.course = Course.objects.get(pk=self.kwargs.get('pk'))
+        email = request.POST.get('email')
+        cu.user = get_user_model().objects.get(email=email)
+        cu.role = request.POST.get('role')
+        cu.save()
+        return self.get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(CourseDetailView, self).get_context_data(**kwargs)
+        course = Course.objects.get(pk=self.kwargs.get('pk'))
+        user = self.request.user
+        ctx["object"] = CourseUser.objects.get(user=user, course=course)
+        return ctx
 
 
 class CourseCreateView(CreateView):
