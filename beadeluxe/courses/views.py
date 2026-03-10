@@ -40,12 +40,26 @@ class CourseDetailView(DetailView):
     template_name = 'course_detail.html'
 
     def post(self, request, *args, **kwargs):
-        cu = CourseUser()
-        cu.course = Course.objects.get(pk=self.kwargs.get('pk'))
-        email = request.POST.get('email')
-        cu.user = get_user_model().objects.get(email=email)
-        cu.role = request.POST.get('role')
-        cu.save()
+        if request.POST.get("form_type") == "addMember":
+            cu = CourseUser()
+            cu.course = Course.objects.get(pk=self.kwargs.get('pk'))
+            email = request.POST.get('email')
+            cu.user = get_user_model().objects.get(email=email)
+            cu.role = request.POST.get('role')
+            cu.save()
+        elif request.POST.get("form_type") == "assignBeadle":
+            fullname = request.POST.get('fullname')
+            course = Course.objects.get(pk=self.kwargs.get('pk'))
+            user = get_user_model().objects.get(fullname=fullname)
+            cu = CourseUser.objects.get(user=user, course=course)
+            cu.role = "beadle"
+            cu.save()
+        elif request.POST.get("form_type") == "resign":
+            user = self.request.user
+            course = Course.objects.get(pk=self.kwargs.get('pk'))
+            cu = CourseUser.objects.get(user=user, course=course)
+            cu.role = "student"
+            cu.save()
         return self.get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -54,6 +68,7 @@ class CourseDetailView(DetailView):
         user = self.request.user
         ctx["object"] = CourseUser.objects.get(user=user, course=course)
         ctx["students"] = CourseUser.objects.filter(course=course, role='student')
+        ctx["beadles"] = CourseUser.objects.filter(course=course, role='beadle')
         return ctx
 
 
