@@ -13,6 +13,7 @@ class RegistrationTest(TestCase):
             username="collin",
             password="secret123"
         )
+    # Check if the user is registered successfully with correct credentials
     def test_user_is_registered(self):
         user_count = User.objects.filter(username="collin").count()
         self.assertEqual(user_count, 1)
@@ -26,7 +27,7 @@ class CredentialTest(TestCase):
             username="collin",
             password="secret123"
         )
-
+    # Check if all credentials are valid and saved correctly
     def test_credentials_valid(self):
         user = User(
             username="collin2",
@@ -46,6 +47,7 @@ class CredentialTest(TestCase):
         self.assertEqual(user.mobile_number, "+6591258565")
         self.assertEqual(str(user), "Collin Harper")
 
+    # In the case that the format is invalid, a ValidationError should be raised
     def test_credentials_invalid(self):
         user = User(
             username="bobsmith",
@@ -53,11 +55,12 @@ class CredentialTest(TestCase):
             nickname="Bob",
             pronouns="he/him",
             email="bob@example.com",
-            mobile_number="91258 565"  # invalid format
+            mobile_number="91258 565"  # Invalid format since the mobile number should start with a + and contain no spaces
         )
         with self.assertRaises(ValidationError):
             user.full_clean()
-
+            
+    # Check if profile picture is added and saved correctly
     def test_profile_picture_added(self):
         image = SimpleUploadedFile(
             name="test_image.jpg",
@@ -87,35 +90,42 @@ class PasswordResetTest(TestCase):
             password="secret123"
         )
 
+    # Test the entire password reset flow from requesting a reset to setting a new password and verifying that the password has been updated successfully
     def test_password_reset_flow(self):
-        # Step 1: request password reset
-        response = self.client.post(
-            reverse("password_reset"),
-            {"email": "collin@example.com"}
-        )
+        # Request password reset
+        response = self.client.post(reverse("password_reset"), {"email": "collin@example.com"})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(mail.outbox), 1)
 
-        # Step 2: extract reset link from email
+        # Extract reset link from email
         email_body = mail.outbox[0].body
-        reset_link = email_body.split("http://testserver")[1].split()[0]
+        reset_link = [line for line in email_body.splitlines() if "http://testserver" in line][0]
 
-        # Step 3: GET the reset link (form page)
+        # GET reset link (redirects to set-password form)
         response = self.client.get(reset_link)
+        self.assertEqual(response.status_code, 302)  # redirect expected
+        self.assertIn("/set-password/", response.url)
 
-        # Step 4: POST new password to the same link
-        response = self.client.post(reset_link, {
-            "new_password1": "newsecret123",
-            "new_password2": "newsecret123",
+        # Follow redirect to set-password form
+        response = self.client.get(reset_link, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "New password")
+
+        # POST new password to set-password form
+        set_password_url = response.request["PATH_INFO"]
+        response = self.client.post(set_password_url, {
+            "new_password1": "NewSecret123!",
+            "new_password2": "NewSecret123!",
         })
         self.assertRedirects(response, reverse("password_reset_complete"))
 
-        # Step 5: refresh user from DB
+        # Verify password updated inside the database
         self.user.refresh_from_db()
-        print("Password check:", self.user.check_password("newsecret123"))
+        self.assertTrue(self.user.check_password("NewSecret123!"))
 
-        # Step 6: assert password updated
-        self.assertTrue(self.user.check_password("newsecret123"))
+        # Check logins with old and new passwords
+        self.assertTrue(self.client.login(username="collin", password="NewSecret123!"))
+        self.assertFalse(self.client.login(username="collin", password="secret123"))
 
 class ProfileViewTest(TestCase):
     def setUp(self):
@@ -129,6 +139,7 @@ class ProfileViewTest(TestCase):
             mobile_number="+6591258565"
         )
 
+    # Test that the profile view displays the correct user information when accessed by a logged-in user
     def test_profile_view(self):
         self.client.login(username="collin", password="secret123")
         response = self.client.get(reverse("user_management:profile-view", args=["collin"]))
