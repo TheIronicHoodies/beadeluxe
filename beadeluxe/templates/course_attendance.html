@@ -5,27 +5,36 @@
 
 {% block content %}
 
-    <h2>{{ course.code }} - Attendance Dashboard</h2>
-    <table border="1">
-        <tr>
-            <th>Student</th>
-            <th>Total Classes</th>
-            <th>Cuts</th>
-        </tr>
-        {% for entry in attendance_table %}
-        <tr>
-            <td>{{ entry.student }}</td>
-            <td>{{ entry.total }}</td>
-            <td>{{ entry.cuts }}</td>
-        </tr>
-        {% endfor %}
-    </table><br>
+<h1>{{ course.name }} Attendance</h1>
+<table border="1">
+    <tr>
+        <th>Name</th>
 
-    <h3>Sessions</h3>
-    <ul>
         {% for session in sessions %}
-            <li>{{ session.date }}</li>
+            <th>{{ session.date|date:"m/d" }}</th>
         {% endfor %}
-    </ul>
+    </tr>
+
+    {% for row in attendance_matrix %}
+    <tr>
+        <td>{{ row.person }}</td>
+        {% for status in row.attendance %}
+            <td style="text-align: center;">
+            {% if status == "present" %}
+                ✔️
+            {% elif status == "late" %}
+                ⏰
+            {% else %}
+                ❌
+            {% endif %}
+            </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+<br>
+
+<a href="..">Back to Course</a>
 
 {% endblock %}

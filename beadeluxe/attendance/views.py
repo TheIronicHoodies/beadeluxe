@@ -11,34 +11,70 @@ def attendance_view(request):
 
     user = request.user
 
-    # Get all courses enrolled for this user
-    enrollments = CourseUser.objects.filter(user=user)
+    # Get all course memberships for the user
+    enrollments = CourseUser.objects.filter(
+        user=user
+    )
 
     attendance_data = []
 
     for enrollment in enrollments:
-        records = Attendance.objects.filter(course_user=enrollment)
 
-        total_classes = records.count()
+        sessions = AttendanceSession.objects.filter(
+            course=enrollment.course
+        ).order_by("date")
 
-        cuts = records.filter(status="absent").count()
-        lates = records.filter(status="late").count()
+        records = Attendance.objects.filter(
+            course_user=enrollment
+        )
 
-        # Make lates count as half-cut
-        cuts = cuts + (lates * 0.5)
+        record_map = {
+            record.session_id: record
+            for record in records
+        }
+
+        session_rows = []
+
+        cuts = 0
+
+        for session in sessions:
+
+            record = record_map.get(session.id)
+
+            if record:
+                status = record.status
+            else:
+                status = "absent"   # default
+
+            if status == "absent":
+                cuts += 1
+
+            session_rows.append({
+                "date": session.date,
+                "status": status
+            })
+
+        total_sessions = len(sessions)
+
+        if total_sessions > 0:
+            attendance_percentage = ((total_sessions - cuts) / total_sessions) * 100
+        else:
+            attendance_percentage = 0
 
         attendance_data.append({
             "course": enrollment.course,
-            "records": records,
+            "role": enrollment.role,   # useful for display
+            "sessions": session_rows,
+            "total_sessions": total_sessions,
             "cuts": cuts,
-            "total_classes": total_classes
+            "attendance_percentage": round(attendance_percentage, 2)
         })
 
-    context = {
-        "attendance_data": attendance_data
-    }
-
-    return render(request, "attendance.html", context)
+    return render(
+        request,
+        "attendance.html",
+        {"attendance_data": attendance_data}
+    )
 
 @login_required
 def course_attendance_view(request, course_id):
@@ -54,33 +90,39 @@ def course_attendance_view(request, course_id):
     if not membership or membership.role not in ["professor", "beadle"]:
         return render(request, "403.html")
 
-    students = CourseUser.objects.filter(
+    persons = CourseUser.objects.filter(
         course=course,
-        role="student"
     )
 
-    sessions = AttendanceSession.objects.filter(course=course).order_by("date")
+    sessions = AttendanceSession.objects.filter(
+        course=course
+    ).order_by("date")
 
-    attendance_table = []
+    attendance_matrix = []
 
-    for student in students:
+    for person in persons:
+        row = {
+            "person": person.user.fullname,
+            "attendance": []
+        }
 
-        records = Attendance.objects.filter(course_user=student)
+        for session in sessions:
+            record = Attendance.objects.filter(
+                session=session,
+                course_user=person
+            ).first()
 
-        total_classes = records.count()
-        cuts = records.filter(status="absent").count()
+            if record:
+                row["attendance"].append(record.status)
+            else:
+                row["attendance"].append("absent")      # Default value
 
-        attendance_table.append({
-            "student": student.user.fullname,
-            "records": records,
-            "cuts": cuts,
-            "total": total_classes
-        })
+        attendance_matrix.append(row)
 
     context = {
         "course": course,
         "sessions": sessions,
-        "attendance_table": attendance_table
+        "attendance_matrix": attendance_matrix
     }
 
     return render(request, "course_attendance.html", context)

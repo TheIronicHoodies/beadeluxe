@@ -13,9 +13,9 @@
         <h2>{{ object.code }}</h2>
 
         {% if membership and membership.role == "beadle" %}
-            <p><a href="{% url 'attendance:course_attendance' object.id %}">Attendance Dashboard</a></p>
+            <p><a href="{% url 'courses:course_attendance' object.id %}">Attendance Dashboard</a></p>
         {% endif %}
-        
+
         <p><a href="..">Back to Course List</a></p>
     </main>
 {% endblock %}

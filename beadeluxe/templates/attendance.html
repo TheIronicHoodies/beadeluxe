@@ -2,16 +2,17 @@
 
 {% block content %}
 
-<h2>Your Attendance</h2>
+{% block title %}Attendance Summary{% endblock %}
 
 {% for course_data in attendance_data %}
 
-<div class="course-attendance">
-
-    <h3>{{ course_data.course.code }} - {{ course_data.course.name }}</h3>
+<div id="attendance-summary">
+    <h3>
+        {{ course_data.course.code }} - {{ course_data.course.name }} ({{ course_data.role|title }})
+    </h3>
 
     <p>
-        Total Classes: {{ course_data.total_classes }} |
+        Total Sessions: {{ course_data.total_sessions }} <br>
         Cuts (Absences): <strong>{{ course_data.cuts }}</strong>
     </p>
 
@@ -21,15 +22,25 @@
             <th>Status</th>
         </tr>
 
-        {% for record in course_data.records %}
+        {% for session in course_data.sessions %}
         <tr>
-            <td>{{ record.session.date }}</td>
-            <td>{{ record.status }}</td>
+            <td>{{ session.date|date:"m/d/y" }}</td>
+
+            <td style="text-align: center;">
+
+            {% if session.status == "present" %}
+                ✔️
+            {% elif session.status == "late" %}
+                ⏰
+            {% else %}
+                ❌
+            {% endif %}
+            </td>
         </tr>
         {% endfor %}
-
     </table>
 </div>
+
 
 {% endfor %}
 {% endblock %}
