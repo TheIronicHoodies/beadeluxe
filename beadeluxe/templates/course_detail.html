@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}{{ object.course }}{% endblock %}
 
 {% block content %}
     <main>
@@ -54,4 +54,11 @@
             {% endif %}
         {% endif %}
     </main>
+    <nav>
+        <a href="">Attendance</a>
+        <a href="">Announcements</a>
+        <a href="">Seat Plan</a>
+        <a href="">Calendar</a>
+        <a href="">Group Chat</a>
+    </nav>
 {% endblock %}
