@@ -31,7 +31,8 @@ class CredentialTest(TestCase):
     def test_credentials_valid(self):
         user = User(
             username="collin2",
-            fullname="Collin Harper",
+            firstname="Collin",
+            lastname="Harper",
             nickname="Collin",
             pronouns="he/him",
             email="collin@example.com",
@@ -40,7 +41,8 @@ class CredentialTest(TestCase):
         user.set_password("secret123")
         user.full_clean()
         user.save()
-        self.assertEqual(user.fullname, "Collin Harper")
+        self.assertEqual(user.firstname, "Collin")
+        self.assertEqual(user.lastname, "Harper")
         self.assertEqual(user.nickname, "Collin")
         self.assertEqual(user.pronouns, "he/him")
         self.assertEqual(user.email, "collin@example.com")
@@ -51,7 +53,8 @@ class CredentialTest(TestCase):
     def test_credentials_invalid(self):
         user = User(
             username="bobsmith",
-            fullname="Bob Smith",
+            firstname="Bob",
+            lastname="Smith",
             nickname="Bob",
             pronouns="he/him",
             email="bob@example.com",
@@ -69,7 +72,8 @@ class CredentialTest(TestCase):
         )
         user = User.objects.create(
             username="collin3",
-            fullname="Collin Harper",
+            firstname="Collin",
+            lastname="Harper",
             nickname="Collin",
             pronouns="he/him",
             email="collin@example.com",
@@ -132,7 +136,8 @@ class ProfileViewTest(TestCase):
         self.user = User.objects.create_user(
             username="collin",
             password="secret123",
-            fullname="Collin Harper",
+            firstname="Collin",
+            lastname="Harper",
             nickname="Collin",
             pronouns="he/him",
             email="collin@example.com",
@@ -144,7 +149,8 @@ class ProfileViewTest(TestCase):
         self.client.login(username="collin", password="secret123")
         response = self.client.get(reverse("user_management:profile-view", args=["collin"]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Collin Harper")
+        self.assertContains(response, "Collin")
+        self.assertContains(response, "Harper")
         self.assertContains(response, "Collin")
         self.assertContains(response, "he/him")
         self.assertContains(response, "collin@example.com")

@@ -7,9 +7,9 @@ CustomUser = get_user_model()
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('fullname', 'nickname', 'pronouns', 'mobile_number', 'profile_picture')}),
+        (None, {'fields': ('firstname', 'lastname', 'nickname', 'pronouns', 'mobile_number', 'profile_picture')}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('fullname', 'nickname', 'pronouns', 'mobile_number', 'profile_picture')}),
+        (None, {'fields': ('firstname', 'lastname', 'nickname', 'pronouns', 'mobile_number', 'profile_picture')}),
     )
 

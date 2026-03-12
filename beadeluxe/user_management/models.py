@@ -4,7 +4,8 @@ from django.core.validators import RegexValidator
 from django.urls import reverse   
 
 class CustomUser(AbstractUser):
-    fullname = models.CharField(max_length=46)
+    firstname = models.CharField(max_length=46)
+    lastname = models.CharField(max_length=46)
     nickname = models.CharField(max_length=20)
     pronounoptions = [
         ("he/him", "he/him"),
@@ -24,7 +25,7 @@ class CustomUser(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
     def __str__(self):
-        return self.fullname
+        return self.firstname + " " + self.lastname
     
     def get_absolute_url(self):
         return reverse("profile-view", args=[self.username])
