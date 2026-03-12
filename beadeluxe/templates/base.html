@@ -7,37 +7,42 @@
         {% block styles %}{% endblock %}
         <link rel="stylesheet" type="text/css" href=" {% static 'style.css' %} ">
     </head>
-    <header>
-        <a href="{% url 'home' %}" id="app_title" class="strong">
-            <marquee behavior="alternate" direction="down" id="vertical_dvd">
-                <marquee behavior="alternate" direction="">
-                    
-                        {% if request.resolver_match.app_name and request.resolver_match.app_name != 'user_management' %}
-                            {{request.resolver_match.app_name}}
-                        {% else %}
-                            <h1>Beadeluxe</h1>
-                        {% endif %}
-                    
-                    </marquee>
-                </marquee>
-            </a>
-        {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit">Logout</button><br><br>
-                <a href="{% url 'user_management:profile-update' username=user.username%}">Update Profile</a><br>
-                <a href="{% url 'user_management:profile-view' username=user.username%}">View Profile</a><br>
-                <a href="{% url 'attendance:attendance' %}">Attendance Summary</a><br>
-            </form>
-        {% else %}
-            <div id="user-reg">
-                <a href="{% url 'user_management:profile-create' %}">Create a New User</a> <br>
-                <a href="{% url 'login' %}">Login</a>
-            </div>
-        {% endif %} 
-    </header>
     <body>
+        <header>
+            <a href="{% url 'home' %}" id="app_title" class="strong">
+                <marquee behavior="alternate" direction="down" id="vertical_dvd">
+                    <marquee behavior="alternate" direction="">
+                        
+                            {% if request.resolver_match.app_name and request.resolver_match.app_name != 'user_management' %}
+                                {{request.resolver_match.app_name}}
+                            {% else %}
+                                <h1 id="beadeluxe">Beadeluxe</h1>
+                            {% endif %}
+                        
+                        </marquee>
+                    </marquee>
+                </a>
+            {% if user.is_authenticated %}
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button><br><br>
+                    <a href="{% url 'user_management:profile-update' username=user.username%}">Update Profile</a><br>
+                    <a href="{% url 'user_management:profile-view' username=user.username%}">View Profile</a><br>
+                    <a href="{% url 'attendance:attendance' %}">Attendance Summary</a><br>
+                </form>
+            {% else %}
+                <div id="user-reg">
+                    <a href="{% url 'user_management:profile-create' %}">Register</a> <br>
+                    <a href="{% url 'login' %}">Login</a>
+                </div>
+            {% endif %} 
+        </header>
         {% block content %}
         {% endblock %}
+        <footer>
+            <section>
+                Contact us!
+            </section>
+        </footer>
     </body>
 </html>

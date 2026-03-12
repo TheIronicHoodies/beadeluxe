@@ -4,65 +4,67 @@
 {% block title %} Profile Creation {% endblock %}
 
 {% block content %}
-    <form method="POST" id="create-user" enctype="multipart/form-data">
-        {% csrf_token %}
+    <main>
+        <form method="POST" id="create-user" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        {{ form.non_field_errors }}
+            {{ form.non_field_errors }}
 
-        <div>
-            {{ form.username.label_tag }}
-            {{ form.username }}
-            {{ form.username.errors }}
-        </div>
+            <div>
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
 
-        <div>
-            {{ form.email.label_tag }}
-            {{ form.email }}
-            {{ form.email.errors }}
-        </div>
+            <div>
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
 
-        <div>
-            {{ form.fullname.label_tag }}
-            {{ form.fullname }}
-            {{ form.fullname.errors }}
-        </div>
+            <div>
+                {{ form.fullname.label_tag }}
+                {{ form.fullname }}
+                {{ form.fullname.errors }}
+            </div>
 
-        <div>
-            {{ form.nickname.label_tag }}
-            {{ form.nickname }}
-            {{ form.nickname.errors }}
-        </div>
+            <div>
+                {{ form.nickname.label_tag }}
+                {{ form.nickname }}
+                {{ form.nickname.errors }}
+            </div>
 
-        <div>
-            {{ form.pronouns.label_tag }}
-            {{ form.pronouns }}
-            {{ form.pronouns.errors }}
-        </div>
+            <div>
+                {{ form.pronouns.label_tag }}
+                {{ form.pronouns }}
+                {{ form.pronouns.errors }}
+            </div>
 
-        <div>
-            {{ form.mobile_number.label_tag }}
-            {{ form.mobile_number }}
-            {{ form.mobile_number.errors }}
-        </div>
+            <div>
+                {{ form.mobile_number.label_tag }}
+                {{ form.mobile_number }}
+                {{ form.mobile_number.errors }}
+            </div>
 
-        <div>
-            {{ form.profile_picture.label_tag }}
-            {{ form.profile_picture }}
-            {{ form.profile_picture.errors }}
-        </div>
+            <div>
+                {{ form.profile_picture.label_tag }}
+                {{ form.profile_picture }}
+                {{ form.profile_picture.errors }}
+            </div>
 
-        <div>
-            {{ form.password1.label_tag }}
-            {{ form.password1 }}
-            {{ form.password1.errors }}
-        </div>
+            <div>
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                {{ form.password1.errors }}
+            </div>
 
-        <div>
-            {{ form.password2.label_tag }}
-            {{ form.password2 }}
-            {{ form.password2.errors }}
-        </div>
+            <div>
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {{ form.password2.errors }}
+            </div>
 
-        <button type="submit">Submit</button>
-    </form>
+            <button type="submit">Submit</button>
+        </form>
+    </main>
 {% endblock %}
