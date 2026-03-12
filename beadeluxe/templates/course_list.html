@@ -32,13 +32,9 @@
                 <img src="https://placehold.co/600x400" alt="Some sample words">
             </a>
             <h2>
-                <a href="{{ courseUser.course.pk }}">{{ courseUser.course }}</a>
+                <a href="{{ courseUser.course.get_absolute_url }}"> {{ courseUser.course }}</a>
             </h2>
         </div>
-        {% comment %}
-        <a href="{{ course.get_absolute_url }}"> {{ course }}</a>
-        {% endcomment %}
-        
         {% endfor %}
     </main>
 {% endblock %}

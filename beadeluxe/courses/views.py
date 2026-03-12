@@ -1,11 +1,9 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView
 from django.contrib.auth import get_user_model
 
 from .models import Course, CourseUser
-from .forms import CourseForm
 
 # Create your views here.
 # Class-based version
@@ -70,12 +68,3 @@ class CourseDetailView(DetailView):
         ctx["students"] = CourseUser.objects.filter(course=course, role='student')
         ctx["beadles"] = CourseUser.objects.filter(course=course, role='beadle')
         return ctx
-
-
-class CourseCreateView(CreateView):
-    model = Course
-    form_class = CourseForm
-    template_name = 'course_create.html'
-
-    def post(self, request, *args, **kwargs):
-        course_form = CourseForm(request.POST)

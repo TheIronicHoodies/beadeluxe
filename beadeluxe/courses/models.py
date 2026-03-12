@@ -14,7 +14,7 @@ class Course(models.Model):
         return '{}: {}'.format(self.code, self.name)
 
     def get_absolute_url(self):
-        return reverse('course_detail', args=[str(self.id)])
+        return reverse('courses:detail', args=[str(self.id)])
     
     class Meta:
         ordering = ['name']

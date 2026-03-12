@@ -1,10 +1,9 @@
 from django.urls import path
-from .views import CourseListView, CourseDetailView, CourseCreateView
+from .views import CourseListView, CourseDetailView
 
 urlpatterns = [
     path('', CourseListView.as_view(), name='course_list'),
-    path('<int:pk>/', CourseDetailView.as_view(), name='course-detail'),
-    path('add/', CourseCreateView.as_view(), name='course-create'),
+    path('<int:pk>/', CourseDetailView.as_view(), name='detail'),
 ]
 
 app_name = "courses"
