@@ -40,8 +40,3 @@ class CourseUser(models.Model):
             constraints = [
         models.UniqueConstraint(fields=['user', 'course'], name='unique_user_course')
     ] #A user can't have 2 roles
-
-    def __str__(self):
-        user = self.user.fullname if self.user else "Unknown User"
-        course = self.course.code if self.course else "Unknown Course"
-        return f"{user} - {course} - {self.role}"

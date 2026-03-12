@@ -76,14 +76,9 @@ def attendance_view(request):
     )
 
 @login_required
-def course_attendance_view(request, course_id):
-
-    course = Course.objects.get(id=course_id)
-
-    membership = CourseUser.objects.filter(
-        user=request.user,
-        course=course
-    ).first()
+def course_attendance_view(request, pk):
+    course = Course.objects.get(pk=pk)
+    membership = CourseUser.objects.get(user=request.user, course=course)
 
     if not membership:
         raise PermissionDenied
