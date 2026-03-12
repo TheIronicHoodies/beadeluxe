@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth import get_user_model
@@ -7,7 +7,7 @@ from .models import Course, CourseUser
 
 # Create your views here.
 # Class-based version
-class CourseListView(ListView):
+class CourseListView(LoginRequiredMixin, ListView):
     model = Course
     template_name = 'course_list.html'
 
@@ -33,7 +33,7 @@ class CourseListView(ListView):
         return ctx
 
 
-class CourseDetailView(DetailView):
+class CourseDetailView(LoginRequiredMixin, DetailView):
     model = CourseUser
     template_name = 'course_detail.html'
 

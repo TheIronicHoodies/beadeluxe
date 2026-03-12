@@ -1,6 +1,7 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from .models import Course, CourseUser
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -33,8 +34,10 @@ class TestModels(TestCase):
         self.test_course_user = CourseUser.objects.get(pk=1)
         return super().setUp()
     
-    def test_string_display(self):
+    def test_course_string_display(self):
         self.assertEqual(self.test_course.__str__(), "WilDe 11: Introduction to Wilson Depot")
+
+    def test_course_user_string_display(self):
         self.assertEqual(self.test_course_user.__str__(), "Wilson Depot")
     
     def test_absolute_url(self):
@@ -42,11 +45,32 @@ class TestModels(TestCase):
 
 
 class TestViews(TestCase):
+    pass
+
+
+class TestCoursesListPage(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="Wilson Depot",
+            password="password"
+        )
+        return super().setUp()
+
+    def test_page_response_if_logged_in(self):
+        client = Client()
+        client.login(
+            username="Wilson Depot",
+            password="password"
+        )
+        url = reverse('courses:list')
+        response = client.get(url)
+
+    def test_page_response_if_not_logged_in(self):
+        client = Client()
+        url = reverse('courses:list')
+        response = client.get(url)
+        self.assertRedirects(response, '/accounts/login/?next=/courses/', status_code=302, target_status_code=200)
+
     def test(self):
-        self.assertHTMLEqual()
-    pass
-
-
-
-class TestForm(TestCase):
-    pass
+        # self.assertInHTML()
+        pass

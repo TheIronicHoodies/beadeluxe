@@ -7,10 +7,9 @@
     <section>
         <h1>Courses</h1>
         
-        {% if user.is_authenticated %}
         <p>Add a course</p>
 
-        <form action="{% url 'courses:course_list' %}" method="post">
+        <form action="{% url 'courses:list' %}" method="post">
             {% csrf_token %}
             <label for="course_name">
                 <span>Course Name:</span>
@@ -22,7 +21,6 @@
             </label>
             <input type="submit" value="Submit">
         </form>
-        {% endif %}
     </section>
     
     <main class="container">
