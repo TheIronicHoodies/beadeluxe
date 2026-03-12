@@ -18,15 +18,30 @@
     {% for row in attendance_matrix %}
     <tr>
         <td>{{ row.person }}</td>
-        {% for status in row.attendance %}
+        {% for cell in row.attendance %}
             <td style="text-align: center;">
-            {% if status == "present" %}
-                ✔️
-            {% elif status == "late" %}
-                ⏰
-            {% else %}
-                ❌
-            {% endif %}
+                <form method="POST" action="{% url 'attendance:update_attendance' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="course_user_id" value="{{ row.course_user_id }}">
+                <input type="hidden" name="session_id" value="{{ cell.session_id }}">
+
+                <select name="status" onchange="this.form.submit()">
+
+                    <option value="present" {% if cell.status == "present" %}selected{% endif %}>
+                    🟢
+                    </option>
+
+                    <option value="late" {% if cell.status == "late" %}selected{% endif %}>
+                    🟡
+                    </option>
+
+                    <option value="absent" {% if cell.status == "absent" %}selected{% endif %}>
+                    🔴
+                    </option>
+
+                </select>
+                </form>
             </td>
         {% endfor %}
         </tr>

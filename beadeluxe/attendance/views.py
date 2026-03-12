@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from courses.models import CourseUser, Course
 from .models import Attendance, AttendanceSession
@@ -8,7 +8,6 @@ from django.core.exceptions import PermissionDenied
 
 @login_required
 def attendance_view(request):
-
     user = request.user
 
     # Get all course memberships for the user
@@ -78,7 +77,6 @@ def attendance_view(request):
 
 @login_required
 def course_attendance_view(request, course_id):
-
     course = Course.objects.get(id=course_id)
 
     # Check if user is professor or beadle for the course
@@ -94,6 +92,7 @@ def course_attendance_view(request, course_id):
         course=course,
     )
 
+    # Sort table by date
     sessions = AttendanceSession.objects.filter(
         course=course
     ).order_by("date")
@@ -103,6 +102,7 @@ def course_attendance_view(request, course_id):
     for person in persons:
         row = {
             "person": person.user.fullname,
+            "course_user_id": person.id,
             "attendance": []
         }
 
@@ -113,9 +113,14 @@ def course_attendance_view(request, course_id):
             ).first()
 
             if record:
-                row["attendance"].append(record.status)
+                status = record.status
             else:
-                row["attendance"].append("absent")      # Default value
+                status = "absent"
+
+            row["attendance"].append({
+                "session_id": session.id,
+                "status": status
+            })
 
         attendance_matrix.append(row)
 
@@ -126,3 +131,25 @@ def course_attendance_view(request, course_id):
     }
 
     return render(request, "course_attendance.html", context)
+
+@login_required
+def update_attendance(request):
+    course_user_id = request.POST.get("course_user_id")
+    session_id = request.POST.get("session_id")
+    status = request.POST.get("status")
+
+    if not course_user_id or not session_id:
+        return redirect(request.META.get("HTTP_REFERER"))
+
+    course_user = CourseUser.objects.get(id=course_user_id)
+    session = AttendanceSession.objects.get(id=session_id)
+
+    record, created = Attendance.objects.get_or_create(
+        course_user=course_user,
+        session=session
+    )
+
+    record.status = status
+    record.save()
+
+    return redirect(request.META.get("HTTP_REFERER"))

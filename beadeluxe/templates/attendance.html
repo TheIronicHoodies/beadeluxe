@@ -29,11 +29,11 @@
             <td style="text-align: center;">
 
             {% if session.status == "present" %}
-                ✔️
+                🟢
             {% elif session.status == "late" %}
-                ⏰
+                🟡
             {% else %}
-                ❌
+                🔴
             {% endif %}
             </td>
         </tr>

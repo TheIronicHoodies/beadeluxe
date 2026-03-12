@@ -4,7 +4,6 @@ from courses.models import Course, CourseUser
 
 
 class AttendanceSession(models.Model):
-
     course = models.ForeignKey(
         Course,
         on_delete=models.CASCADE,
@@ -24,7 +23,6 @@ class AttendanceSession(models.Model):
         return f"{self.course.code} - {self.date}"
 
 class Attendance(models.Model):
-
     STATUS_CHOICES = [
         ("present", "Present"),
         ("absent", "Absent"),
