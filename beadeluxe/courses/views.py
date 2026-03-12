@@ -32,6 +32,21 @@ class CourseDetailView(DetailView):
     model = Course
     template_name = 'course_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        course = self.object
+        user = self.request.user
+
+        membership = CourseUser.objects.filter(
+            user=user,
+            course=course
+        ).first()
+
+        context["membership"] = membership
+
+        return context
+
 
 class CourseCreateView(CreateView):
     model = Course
