@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <main>
+        {% comment %}
+        <h1>{{ course.name }}</h1>
+        <h2>{{ course.code }}</h2>
+        {% endcomment %}
+        <h1>{{ attendance.name }}</h1>
+        <h2>{{ attendance.code }}</h2>
+
+        <!-- {% for students in course_list %} -->
+
+        <!-- {% for course in object_list%}
+        <div class="col">
+            <a href="#">
+                <img src="https://placehold.co/600x400" alt="Some sample words">
+            </a>
+            <h2>
+                <a href="{{ course.pk }}">{{ course }}</a>
+            </h2>
+        </div>
+        {% comment %}
+        <a href="{{ course.get_absolute_url }}"> {{ course }}</a>
+        {% endcomment %} -->
+
+        <p><a href="..">Back to Course Home</a></p>
+    </main>
+{% endblock %}
