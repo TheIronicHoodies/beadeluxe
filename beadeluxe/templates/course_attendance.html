@@ -5,15 +5,78 @@
 
 {% block content %}
 
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background: white;
+        padding: 20px;
+        margin: 15% auto;
+        width: 250px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .modal-buttons {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+
 <h1>{{ course.name }} Attendance</h1>
 <table border="1">
     <tr>
         <th>Name</th>
 
+        <!-- Session deletion / date tag -->
         {% for session in sessions %}
-            <th>{{ session.date|date:"m/d" }}</th>
+            <th>
+                <form method="POST" action="{% url 'attendance:delete_session' session.id %}">
+                {% csrf_token %}
+
+                <button 
+                    type="submit" 
+                    onclick="return confirm('Delete this session and associated attendance records?')"
+                >
+                    {{ session.date|date:"m/d" }}
+                </button>
+
+                </form>
+            </th>
         {% endfor %}
+
+        <!-- Session creation button -->
+        <th>
+            <button onclick="openModal()"> + </button>
+        </th>
     </tr>
+
+    <!-- Modal window and content -->
+    <div id="sessionModal" class="modal">
+        <div class="modal-content">
+            <h3>Create Session</h3>
+            <form method="POST" action="{% url 'attendance:add_session' course.id %}">
+            {% csrf_token %}
+
+            <input type="date" name="session_date" id="sessionDate" required>
+
+            <div class="modal-buttons">
+                <button type="submit">Add</button>
+                <button type="button" onclick="closeModal()">Cancel</button>
+            </div>
+            </form>
+        </div>
+    </div>
 
     {% for row in attendance_matrix %}
     <tr>
@@ -43,7 +106,35 @@
                 </select>
                 </form>
             </td>
+
+            <!-- Script for the calendar menu for the session creation button -->
+            <script>
+                function openModal() {
+                    const modal = document.getElementById("sessionModal")
+                    const dateInput = document.getElementById("sessionDate")
+
+                    modal.style.display = "block"
+                    dateInput.focus()
+                }
+
+                function closeModal() {
+                    document.getElementById("sessionModal").style.display = "none"
+                }
+
+                // Close modal if clicking outside
+                window.onclick = function(event) {
+                    const modal = document.getElementById("sessionModal")
+                    if (event.target === modal) {
+                        modal.style.display = "none"
+                    }
+                }
+            </script>
+
         {% endfor %}
+
+        <!-- Empty for td for use by the session creation button -->
+        <td></td>
+
         </tr>
     {% endfor %}
 </table>

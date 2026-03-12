@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from courses.models import CourseUser, Course
 from .models import Attendance, AttendanceSession
 from django.core.exceptions import PermissionDenied
+from django.utils.timezone import now
 
 # Create your views here.
 
@@ -18,7 +20,6 @@ def attendance_view(request):
     attendance_data = []
 
     for enrollment in enrollments:
-
         sessions = AttendanceSession.objects.filter(
             course=enrollment.course
         ).order_by("date")
@@ -37,13 +38,12 @@ def attendance_view(request):
         cuts = 0
 
         for session in sessions:
-
             record = record_map.get(session.id)
 
             if record:
                 status = record.status
             else:
-                status = "absent"   # default
+                status = "absent"   # Default value
 
             if status == "absent":
                 cuts += 1
@@ -62,7 +62,7 @@ def attendance_view(request):
 
         attendance_data.append({
             "course": enrollment.course,
-            "role": enrollment.role,   # useful for display
+            "role": enrollment.role,
             "sessions": session_rows,
             "total_sessions": total_sessions,
             "cuts": cuts,
@@ -106,6 +106,7 @@ def course_attendance_view(request, course_id):
             "attendance": []
         }
 
+        # For each session, get a person’s attendance status and store it for the attendance matrix
         for session in sessions:
             record = Attendance.objects.filter(
                 session=session,
@@ -153,3 +154,44 @@ def update_attendance(request):
     record.save()
 
     return redirect(request.META.get("HTTP_REFERER"))
+
+@login_required
+@require_POST
+def add_session(request, course_id):
+    course = Course.objects.get(id=course_id)
+
+    membership = CourseUser.objects.filter(
+        user=request.user,
+        course=course
+    ).first()
+
+    if not membership or membership.role not in ["professor", "beadle"]:
+        raise PermissionDenied
+
+    date = request.POST.get("session_date")
+
+    AttendanceSession.objects.get_or_create(
+        course=course,
+        date=date
+    )
+
+    return redirect("courses:course_attendance", course_id)
+
+@login_required
+@require_POST
+def delete_session(request, session_id):
+    session = AttendanceSession.objects.get(id=session_id)
+
+    course = session.course
+
+    membership = CourseUser.objects.filter(
+        user=request.user,
+        course=course
+    ).first()
+
+    if not membership or membership.role not in ["professor", "beadle"]:
+        raise PermissionDenied
+
+    session.delete()  # cascades attendance deletion
+
+    return redirect("courses:course_attendance", course.id)
