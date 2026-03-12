@@ -126,3 +126,93 @@ class TestCoursesListPage(TestCase):
         response = self.client.get(url)
 
         self.assertNotInHTML('<a href="/courses/1/">WilDe 11: Introduction to Wilson Depot</a>', response.text)
+
+
+class TestCoursesDetailPage(TestCase):
+    def setUp(self):
+        self.client = Client()
+        
+        User.objects.create_user(
+            username="Wilson Depot",
+            password="password"
+        )
+        
+        User.objects.create_user(
+            username="Wilson's Son",
+            password="password"
+        )
+
+        course_One = Course()
+        course_One.code = "WilDe 11"
+        course_One.name = "Introduction to Wilson Depot"
+        course_One.save()
+
+        course_user_One = CourseUser()
+        course_user_One.course = Course.objects.get(code="WilDe 11")
+        course_user_One.user = User.objects.get(username="Wilson Depot")
+        course_user_One.role = "beadle"
+        course_user_One.save()
+
+        course_user_Two = CourseUser()
+        course_user_Two.course = Course.objects.get(code="WilDe 11")
+        course_user_Two.user = User.objects.get(username="Wilson's Son")
+        course_user_Two.role = "student"
+        course_user_Two.save()
+
+        return super().setUp()
+    
+    def test_page_response_if_not_logged_in(self):
+        url = reverse('courses:detail', args=[1])
+        response = self.client.get(url)
+
+        # Deliberating whether to change this functionality
+        self.assertRedirects(response, '/accounts/login/?next=/courses/1/', status_code=302, target_status_code=200)
+
+    def test_page_response_if_logged_in(self):
+        self.client.login(
+            username="Wilson Depot",
+            password="password"
+        )
+        url = reverse('courses:detail', args=[1])
+        response = self.client.get(url)
+        self.assertEqual(response.request['PATH_INFO'], '/courses/1/')
+    
+    def test_display_if_not_beadle(self):
+        self.client.login(
+            username="Wilson's Son",
+            password="password"
+        )
+        url = reverse('courses:detail', args=[1])
+        response = self.client.get(url)
+        self.assertNotInHTML('<p>Add a Member</p>', response.text)
+
+    def test_display_if_one_beadle(self):
+        self.client.login(
+            username="Wilson Depot",
+            password="password"
+        )
+        url = reverse('courses:detail', args=[1])
+        response = self.client.get(url)
+        self.assertInHTML('<p>Add a Member</p>', response.text)
+        self.assertNotInHTML('<input type="submit" value="Resign">', response.text)
+    
+    def test_display_if_two_beadles(self):
+        User.objects.create_user(
+            username="Wilson's Colleague",
+            password="password"
+        )
+
+        course_user_One = CourseUser()
+        course_user_One.course = Course.objects.get(code="WilDe 11")
+        course_user_One.user = User.objects.get(username="Wilson's Colleague")
+        course_user_One.role = "beadle"
+        course_user_One.save()
+
+        self.client.login(
+            username="Wilson Depot",
+            password="password"
+        )
+        url = reverse('courses:detail', args=[1])
+        response = self.client.get(url)
+
+        self.assertInHTML('<input type="submit" value="Resign">', response.text)
