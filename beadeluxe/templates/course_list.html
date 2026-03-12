@@ -4,8 +4,11 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <section class="create-form">
-        <form action="/" method="post">
+    <section>
+        <h1>Courses</h1>
+        <p>Add a course</p>
+
+        <form action="{% url 'courses:course_list' %}" method="post">
             {% csrf_token %}
             <label for="course_name">
                 <span>Course Name:</span>

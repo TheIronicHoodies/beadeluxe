@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Your Attendance</h2>
+
+{% for course_data in attendance_data %}
+
+<div class="course-attendance">
+
+    <h3>{{ course_data.course.code }} - {{ course_data.course.name }}</h3>
+
+    <p>
+        Total Classes: {{ course_data.total_classes }} |
+        Cuts (Absences): <strong>{{ course_data.cuts }}</strong>
+    </p>
+
+    <table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+
+        {% for record in course_data.records %}
+        <tr>
+            <td>{{ record.session.date }}</td>
+            <td>{{ record.status }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
+{% endfor %}
+{% endblock %}

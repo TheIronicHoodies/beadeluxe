@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'courses',
     'user_management',
+    'accounts',
+    'home',
+    'attendance'
 ]
 
 MIDDLEWARE = [
@@ -89,15 +92,11 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
+AUTH_USER_MODEL = 'user_management.CustomUser'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
@@ -127,10 +126,11 @@ STATICFILES_DIRS = [
 STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = '/'       
-LOGOUT_REDIRECT_URL = '/'  
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+LOGOUT_REDIRECT_URL = '/accounts/login/'  
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'    
 
-MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR/'media' 
+MEDIA_URL = '/media/'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

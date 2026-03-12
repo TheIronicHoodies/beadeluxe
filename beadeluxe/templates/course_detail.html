@@ -11,6 +11,11 @@
         {% endcomment %}
         <h1>{{ object.name }}</h1>
         <h2>{{ object.code }}</h2>
+
+        {% if membership and membership.role == "beadle" %}
+            <p><a href="{% url 'attendance:course_attendance' object.id %}">Attendance Dashboard</a></p>
+        {% endif %}
+        
         <p><a href="..">Back to Course List</a></p>
     </main>
 {% endblock %}
