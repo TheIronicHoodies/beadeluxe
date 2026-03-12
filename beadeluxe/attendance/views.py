@@ -151,6 +151,9 @@ def course_attendance_view(request, course_id):
             if status == "absent":
                 cuts += 1
 
+            if status == "late":
+                cuts += 0.5
+
             session_rows.append({
                 "date": session.date,
                 "status": status
