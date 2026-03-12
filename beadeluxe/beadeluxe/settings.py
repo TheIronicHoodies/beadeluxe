@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'user_management',
     'accounts',
     'home',
+    'attendance'
 ]
 
 MIDDLEWARE = [

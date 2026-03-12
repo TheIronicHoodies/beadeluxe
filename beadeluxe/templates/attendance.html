@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% block title %}Attendance Summary{% endblock %}
+
+{% for course_data in attendance_data %}
+
+<div id="attendance-summary">
+    <h3>
+        {{ course_data.course.code }} - {{ course_data.course.name }} ({{ course_data.role|title }})
+    </h3>
+
+    <p>
+        Total Sessions: {{ course_data.total_sessions }} <br>
+        Cuts (Absences): <strong>{{ course_data.cuts }}</strong>
+    </p>
+
+    <table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+
+        {% for session in course_data.sessions %}
+        <tr>
+            <td>{{ session.date|date:"m/d/y" }}</td>
+
+            <td style="text-align: center;">
+
+            {% if session.status == "present" %}
+                🟢
+            {% elif session.status == "late" %}
+                🟡
+            {% else %}
+                🔴
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
+{% endfor %}
+{% endblock %}

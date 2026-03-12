@@ -34,3 +34,11 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User  
         fields = ['fullname', 'nickname', 'pronouns', 'mobile_number', 'profile_picture']
+
+# class StudentAttendance(forms.ModelForm):
+#     """
+#     Form for updating a user's attendance per course
+#     """
+#     class Meta:
+#         model = User
+#         fields = []

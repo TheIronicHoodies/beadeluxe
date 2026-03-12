@@ -37,6 +37,18 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
     model = CourseUser
     template_name = 'course_detail.html'
 
+    def get_context_data(self, **kwargs):
+        ctx = super(CourseDetailView, self).get_context_data(**kwargs)
+
+        user = self.request.user
+        course = Course.objects.get(pk=self.kwargs.get('pk'))
+
+        ctx["object"] = CourseUser.objects.get(user=user, course=course)
+        ctx["students"] = CourseUser.objects.filter(course=course, role='student')
+        ctx["beadles"] = CourseUser.objects.filter(course=course, role='beadle')
+
+        return ctx
+
     def post(self, request, *args, **kwargs):
         if request.POST.get("form_type") == "addMember":
             cu = CourseUser()
@@ -59,12 +71,3 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
             cu.role = "student"
             cu.save()
         return self.get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        ctx = super(CourseDetailView, self).get_context_data(**kwargs)
-        course = Course.objects.get(pk=self.kwargs.get('pk'))
-        user = self.request.user
-        ctx["object"] = CourseUser.objects.get(user=user, course=course)
-        ctx["students"] = CourseUser.objects.filter(course=course, role='student')
-        ctx["beadles"] = CourseUser.objects.filter(course=course, role='beadle')
-        return ctx

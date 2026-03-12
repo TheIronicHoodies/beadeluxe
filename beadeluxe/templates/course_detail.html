@@ -7,6 +7,7 @@
     <main>
         <h1>{{ object.course.name }}</h1>
         <h2>{{ object.course.code }}</h2>
+
         <p><a href="..">Back to Course List</a></p>
 
         {% if object.role == 'beadle' %}
@@ -55,10 +56,14 @@
         {% endif %}
     </main>
     <nav>
-        <a href="">Attendance</a>
-        <a href="">Announcements</a>
-        <a href="">Seat Plan</a>
-        <a href="">Calendar</a>
-        <a href="">Group Chat</a>
+        {% if object.role == 'beadle' or object.role == 'professor' %}
+            <p><a href="{% url 'courses:course_attendance' object.id %}">Attendance Dashboard</a></p>
+        {% else %}
+            <p><a href="">Attendance</a></p>
+        {% endif %}
+        <p><a href="">Announcements</a></p>
+        <p><a href="">Seat Plan</a></p>
+        <p><a href="">Calendar</a></p>
+        <p><a href="">Group Chat</a></p>
     </nav>
 {% endblock %}

@@ -24,9 +24,10 @@
         {% if user.is_authenticated %}
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
-                <button type="submit">Logout</button><br>
+                <button type="submit">Logout</button><br><br>
                 <a href="{% url 'user_management:profile-update' username=user.username%}">Update Profile</a><br>
                 <a href="{% url 'user_management:profile-view' username=user.username%}">View Profile</a><br>
+                <a href="{% url 'attendance:attendance' %}">Attendance Summary</a><br>
             </form>
         {% else %}
             <div id="user-reg">
