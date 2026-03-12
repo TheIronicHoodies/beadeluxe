@@ -77,62 +77,105 @@ def attendance_view(request):
 
 @login_required
 def course_attendance_view(request, course_id):
+
     course = Course.objects.get(id=course_id)
 
-    # Check if user is professor or beadle for the course
     membership = CourseUser.objects.filter(
         user=request.user,
         course=course
     ).first()
 
-    if not membership or membership.role not in ["professor", "beadle"]:
-        return render(request, "403.html")
+    if not membership:
+        raise PermissionDenied
 
-    persons = CourseUser.objects.filter(
-        course=course,
-    )
+    # Professor / beadle dashboard
+    if membership.role in ["professor", "beadle"]:
+        persons = CourseUser.objects.filter(course=course)
+        sessions = AttendanceSession.objects.filter(course=course).order_by("date")
 
-    # Sort table by date
-    sessions = AttendanceSession.objects.filter(
-        course=course
-    ).order_by("date")
+        attendance_matrix = []
 
-    attendance_matrix = []
+        for person in persons:
+            row = {
+                "person": person.user.fullname,
+                "course_user_id": person.id,
+                "attendance": []
+            }
 
-    for person in persons:
-        row = {
-            "person": person.user.fullname,
-            "course_user_id": person.id,
-            "attendance": []
+            for session in sessions:
+                record = Attendance.objects.filter(
+                    session=session,
+                    course_user=person
+                ).first()
+
+                status = record.status if record else "absent"
+
+                row["attendance"].append({
+                    "session_id": session.id,
+                    "status": status
+                })
+
+            attendance_matrix.append(row)
+
+        context = {
+            "course": course,
+            "sessions": sessions,
+            "attendance_matrix": attendance_matrix
         }
 
-        # For each session, get a person’s attendance status and store it for the attendance matrix
+        return render(request, "course_attendance.html", context)
+
+    # Student-only page
+    if membership.role == "student":
+
+        sessions = AttendanceSession.objects.filter(
+            course=course
+        ).order_by("date")
+
+        records = Attendance.objects.filter(course_user=membership)
+
+        record_map = {record.session_id: record for record in records}
+
+        session_rows = []
+        cuts = 0
+
         for session in sessions:
-            record = Attendance.objects.filter(
-                session=session,
-                course_user=person
-            ).first()
+
+            record = record_map.get(session.id)
 
             if record:
                 status = record.status
             else:
                 status = "absent"
 
-            row["attendance"].append({
-                "session_id": session.id,
+            if status == "absent":
+                cuts += 1
+
+            if status == "late":
+                cuts += 0.5
+
+            session_rows.append({
+                "date": session.date,
                 "status": status
             })
 
-        attendance_matrix.append(row)
+        total_sessions = len(sessions)
 
-    context = {
-        "course": course,
-        "sessions": sessions,
-        "attendance_matrix": attendance_matrix
-    }
+        attendance_percentage = (
+            ((total_sessions - cuts) / total_sessions) * 100
+            if total_sessions > 0 else 0
+        )
 
-    return render(request, "course_attendance.html", context)
+        context = {
+            "course": course,
+            "sessions": session_rows,
+            "cuts": cuts,
+            "total_sessions": total_sessions,
+            "attendance_percentage": round(attendance_percentage, 2)
+        }
 
+        return render(request, "course_attendance_student.html", context)
+    
 @login_required
 def update_attendance(request):
     course_user_id = request.POST.get("course_user_id")

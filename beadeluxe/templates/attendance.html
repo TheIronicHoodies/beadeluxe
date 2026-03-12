@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block content %}
-
 {% block title %}Attendance Summary{% endblock %}
+
+{% block content %}
 
 {% for course_data in attendance_data %}
 
@@ -27,7 +27,6 @@
             <td>{{ session.date|date:"m/d/y" }}</td>
 
             <td style="text-align: center;">
-
             {% if session.status == "present" %}
                 🟢
             {% elif session.status == "late" %}
