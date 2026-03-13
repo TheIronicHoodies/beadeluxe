@@ -45,16 +45,136 @@ class TestModels(TestCase):
 
 
 class TestViews(TestCase):
-    pass
-
-
-class TestCoursesListPage(TestCase):
     def setUp(self):
+        self.client = Client()
+        
         User.objects.create_user(
             username="Wilson Depot",
             password="password"
         )
+
+        User.objects.create_user(
+            username="Wilson's Son",
+            email="a@test.com",
+            password="password",
+            fullname="Wilson's Son",
+        )
+
+        course_Two = Course()
+        course_Two.code = "WilDe 12"
+        course_Two.name = "Introduction to Wilson Depot 2"
+        course_Two.save()
+
+        course_user_Two = CourseUser()
+        course_user_Two.course = Course.objects.get(code="WilDe 12")
+        course_user_Two.user = User.objects.get(username="Wilson Depot")
+        course_user_Two.role = "beadle"
+        course_user_Two.save()
+
+        return super().setUp()
+    
+    def test_add_course(self):
+        self.client.login(
+            username="Wilson Depot",
+            password="password"
+        )
+        url = reverse('courses:list')
+        data = {
+            'course_name': "Introduction to Wilson Depot",
+            'course_code': "WilDe 11",
+        }
+
+        response = self.client.post(path=url, data=data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Course.objects.filter(code="WilDe 11").exists())
+        course = Course.objects.get(code="WilDe 11")
+        user = User.objects.get(username="Wilson Depot")
+        course_user = CourseUser.objects.get(user=user, course=course)
+        self.assertTrue(course_user.role=="beadle")
+    
+    def test_add_member(self):
+        self.client.login(
+            username="Wilson Depot",
+            password="password"
+        )
+        url = reverse('courses:detail', args=[1])
+        data = {
+            'form_type': "addMember",
+            'email': "a@test.com",
+            'role': "student",
+        }
+
+        response = self.client.post(path=url, data=data)
+
+        self.assertEqual(response.status_code, 200)
+        course = Course.objects.get(code="WilDe 12")
+        user = User.objects.get(username="Wilson's Son")
+        self.assertTrue(CourseUser.objects.filter(course=course, user=user).exists())
+        course_user = CourseUser.objects.get(user=user, course=course)
+        self.assertTrue(course_user.role=="student")
+    
+    def test_assign_beadle(self):
+        self.client.login(
+            username="Wilson Depot",
+            password="password"
+        )
+
+        course_user_Two = CourseUser()
+        course_user_Two.course = Course.objects.get(code="WilDe 12")
+        course_user_Two.user = User.objects.get(username="Wilson's Son")
+        course_user_Two.role = "student"
+        course_user_Two.save()
+        
+        url = reverse('courses:detail', args=[1])
+        data = {
+            'form_type': "assignBeadle",
+            'fullname': "Wilson's Son",
+        }
+
+        response = self.client.post(path=url, data=data)
+
+        self.assertEqual(response.status_code, 200)
+        course = Course.objects.get(code="WilDe 12")
+        user = User.objects.get(username="Wilson's Son")
+        course_user = CourseUser.objects.get(user=user, course=course)
+        self.assertTrue(course_user.role=="beadle")
+    
+    def test_resign(self):
+        self.client.login(
+            username="Wilson Depot",
+            password="password"
+        )
+
+        course_user_Two = CourseUser()
+        course_user_Two.course = Course.objects.get(code="WilDe 12")
+        course_user_Two.user = User.objects.get(username="Wilson's Son")
+        course_user_Two.role = "beadle"
+        course_user_Two.save()
+        
+        url = reverse('courses:detail', args=[1])
+        data = {
+            'form_type': "resign",
+        }
+
+        response = self.client.post(path=url, data=data)
+
+        self.assertEqual(response.status_code, 200)
+        course = Course.objects.get(code="WilDe 12")
+        user = User.objects.get(username="Wilson Depot")
+        course_user = CourseUser.objects.get(user=user, course=course)
+        self.assertTrue(course_user.role=="student")
+
+
+
+class TestCoursesListPage(TestCase):
+    def setUp(self):
         self.client = Client()
+        
+        User.objects.create_user(
+            username="Wilson Depot",
+            password="password"
+        )
 
         course_One = Course()
         course_One.code = "WilDe 11"

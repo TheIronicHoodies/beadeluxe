@@ -18,12 +18,11 @@ class CourseListView(LoginRequiredMixin, ListView):
         c.save()
 
         #Whoever created the course is beadle
-        if request.user.is_authenticated:
-            cu = CourseUser()
-            cu.course = c
-            cu.user = request.user
-            cu.role = "beadle"
-            cu.save()
+        cu = CourseUser()
+        cu.course = c
+        cu.user = request.user
+        cu.role = "beadle"
+        cu.save()
         return self.get(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
