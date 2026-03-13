@@ -10,9 +10,12 @@ User = get_user_model()
 class TestModels(TestCase):
     def setUp(self):
         user = User.objects.create_user(
-            username = "Wilson Depot",
-            password = "password",
-            fullname = "Wilson Depot"
+            username="Wilson Depot",
+            password="password",
+            fullname="Wilson Depot",
+            nickname="WD",
+            pronouns="he/him",
+            mobile_number="+1234567890"
         )
 
         course = Course()
@@ -45,67 +48,86 @@ class TestModels(TestCase):
     
     def test_attendance_session_string_display(self):
         self.assertEqual(self.test_attendance_session.__str__(), "WilDe 11 - 2026-03-13")
-        pass
 
     def test_attendance_string_display(self):
         self.assertEqual(self.test_attendance.__str__(), "Wilson Depot - 2026-03-13 - absent")
-        pass
 
+    def test_attendance_session_unique_constraint(self):
+        # Test that AttendanceSession forces unique course-date
+        course = Course.objects.get(code="WilDe 11")
+        with self.assertRaises(Exception):  # Should raise IntegrityError
+            AttendanceSession.objects.create(course=course, date=datetime.date(2026, 3, 13))
 
-class TestAttendancePage(TestCase):
+    def test_attendance_unique_constraint(self):
+        # Test that Attendance forces session-course_user
+        session = AttendanceSession.objects.get(pk=1)
+        course_user = CourseUser.objects.get(pk=1)
+        with self.assertRaises(Exception):  # Should raise IntegrityError
+            Attendance.objects.create(session=session, course_user=course_user, status="present")
+
+class TestCourseAttendanceStudentPage(TestCase):
     def setUp(self):
         self.client = Client()
         
-        User.objects.create_user(
-            username="Wilson Depot",
-            password="password"
+        self.student_user = User.objects.create_user(
+            username="Wilson Student",
+            password="password",
+            fullname="Test Student",
+            nickname="TS",
+            pronouns="he/him",
+            mobile_number="+1234567890"
         )
 
-        User.objects.create_user(
-            username="prof",
-            password="password"
+        self.course = Course.objects.create(
+            code="TEST101",
+            name="Test Course"
         )
 
-        course = Course()
-        course.code = "WilDe 11"
-        course.name = "Introduction to Wilson Depot"
-        course.save()
+        CourseUser.objects.create(
+            user=self.student_user,
+            course=self.course,
+            role="student"
+        )
 
-        course_user = CourseUser()
-        course_user.user = User.objects.get(username="Wilson Depot")
-        course_user.course = course
-        course_user.role = "student"
+        # Create sessions with attendance
+        session1 = AttendanceSession.objects.create(
+            course=self.course,
+            date=datetime.date(2026, 3, 12)
+        )
 
-        course_user = CourseUser()
-        course_user.user = User.objects.get(username="prof")
-        course_user.course = course
-        course_user.role = "professor"
+        session2 = AttendanceSession.objects.create(
+            course=self.course,
+            date=datetime.date(2026, 3, 13)
+        )
 
-        session_one = AttendanceSession()
-        session_one.course = course
-        session_one.date = datetime.date(2026, 3, 12)
-        session_one.save()
+        course_user = CourseUser.objects.get(user=self.student_user, course=self.course)
+        
+        Attendance.objects.create(
+            session=session1,
+            course_user=course_user,
+            status="present"
+        )
 
-        session_two = AttendanceSession()
-        session_two.course = course
-        session_two.date = datetime.date(2026, 3, 13)
-        session_two.save()
+        Attendance.objects.create(
+            session=session2,
+            course_user=course_user,
+            status="late"
+        )
 
         return super().setUp()
     
-    def test_attendance_view_if_not_logged_in(self):
-        url = reverse('attendance:attendance')
+    def test_student_attendance_display(self):
+        # Test that student attendance page shows correct cuts and percentage
+        self.client.login(username="Wilson Student", password="password")
+        url = reverse('courses:course_attendance', kwargs={'pk': self.course.pk})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-
+        self.assertEqual(response.status_code, 200)
+        # 1 present, 1 late = 0.5 cuts, attendance = 75%
+        self.assertContains(response, "Cuts (Absences): <strong>0.5</strong>")
+        self.assertContains(response, "Attendance: 75.0%")
 
 class TestCourseAttendancePage(TestCase):
     pass
-
-
-class TestCourseAttendanceStudentPage(TestCase):
-    pass
-
 
 class TestViews(TestCase):
     pass
