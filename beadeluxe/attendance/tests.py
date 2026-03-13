@@ -1,7 +1,8 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from .models import Attendance, AttendanceSession
 from courses.models import Course, CourseUser
+from django.urls import reverse
 import datetime
 
 User = get_user_model()
@@ -52,7 +53,50 @@ class TestModels(TestCase):
 
 
 class TestAttendancePage(TestCase):
-    pass
+    def setUp(self):
+        self.client = Client()
+        
+        User.objects.create_user(
+            username="Wilson Depot",
+            password="password"
+        )
+
+        User.objects.create_user(
+            username="prof",
+            password="password"
+        )
+
+        course = Course()
+        course.code = "WilDe 11"
+        course.name = "Introduction to Wilson Depot"
+        course.save()
+
+        course_user = CourseUser()
+        course_user.user = User.objects.get(username="Wilson Depot")
+        course_user.course = course
+        course_user.role = "student"
+
+        course_user = CourseUser()
+        course_user.user = User.objects.get(username="prof")
+        course_user.course = course
+        course_user.role = "professor"
+
+        session_one = AttendanceSession()
+        session_one.course = course
+        session_one.date = datetime.date(2026, 3, 12)
+        session_one.save()
+
+        session_two = AttendanceSession()
+        session_two.course = course
+        session_two.date = datetime.date(2026, 3, 13)
+        session_two.save()
+
+        return super().setUp()
+    
+    def test_attendance_view_if_not_logged_in(self):
+        url = reverse('attendance:attendance')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
 
 
 class TestCourseAttendancePage(TestCase):
@@ -60,4 +104,8 @@ class TestCourseAttendancePage(TestCase):
 
 
 class TestCourseAttendanceStudentPage(TestCase):
+    pass
+
+
+class TestViews(TestCase):
     pass
