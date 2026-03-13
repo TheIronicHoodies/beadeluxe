@@ -1,21 +1,65 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}{{ object.course }}{% endblock %}
 
 {% block content %}
     <main>
-        {% comment %}
-        <h1>{{ course.name }}</h1>
-        <h2>{{ course.code }}</h2>
-        {% endcomment %}
-        <h1>{{ object.name }}</h1>
-        <h2>{{ object.code }}</h2>
+        <h1>{{ object.course.name }}</h1>
+        <h2>{{ object.course.code }}</h2>
 
-        {% if membership and membership.role == "beadle" %}
-            <p><a href="{% url 'attendance:course_attendance' object.id %}">Attendance Dashboard</a></p>
-        {% endif %}
-        
         <p><a href="..">Back to Course List</a></p>
+
+        {% if object.role == 'beadle' %}
+            <p>Add a Member</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="addMember">
+                <label for="email">
+                    <span>Email:</span>
+                    <input type="text" id="email" name="email">
+                </label>
+                <label for="role">
+                    <span>Role:</span>
+                    <select name="role" id="role">
+                        <option value="student">Student</option>
+                        <option value="beadle">Beadle</option>
+                        <option value="professor">Professor</option>
+                    </select>
+                </label>
+                <input type="submit" value="Submit">
+            </form>
+
+            <p>Assign a beadle</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="assignBeadle">
+                <span>Student:</span>
+                <select name="fullname" id="fullname">
+                    <option value="" disabled selected hidden>-- Select an option --</option>
+                    {% for student in students %}
+                    <option value="{{ student }}">{{ student }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Assign">
+            </form>
+
+            <p>Students: <span>{{ students.count }}</span></p>
+            
+            {% if beadles.count > 1 %}
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="resign">
+                    <input type="submit" value="Resign">
+                </form>
+            {% endif %}
+        {% endif %}
     </main>
+    <nav>
+        <p><a href="{% url 'courses:course_attendance' object.course.pk %}">Attendance Dashboard</a></p>
+        <p><a href="">Announcements</a></p>
+        <p><a href="">Seat Plan</a></p>
+        <p><a href="">Calendar</a></p>
+        <p><a href="">Group Chat</a></p>
+    </nav>
 {% endblock %}

@@ -15,7 +15,7 @@ class Course(models.Model):
         return '{}: {}'.format(self.code, self.name)
 
     def get_absolute_url(self):
-        return reverse('course_detail', args=[str(self.id)])
+        return reverse('courses:detail', args=[str(self.id)])
     
     class Meta:
         ordering = ['name']
@@ -33,12 +33,10 @@ class CourseUser(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     role = models.CharField(max_length=20, choices=ROLES)
 
+    def __str__(self):
+        return self.user.fullname
+    
     class Meta:
             constraints = [
         models.UniqueConstraint(fields=['user', 'course'], name='unique_user_course')
     ] #A user can't have 2 roles
-
-    def __str__(self):
-        user = self.user.fullname if self.user else "Unknown User"
-        course = self.course.code if self.course else "Unknown Course"
-        return f"{user} - {course} - {self.role}"
