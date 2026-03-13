@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Courses{% endblock %}
 
 {% block content %}
     <section>
         <h1>Courses</h1>
+        
         <p>Add a course</p>
 
-        <form action="{% url 'courses:course_list' %}" method="post">
+        <form action="{% url 'courses:list' %}" method="post">
             {% csrf_token %}
             <label for="course_name">
                 <span>Course Name:</span>
@@ -23,23 +24,15 @@
     </section>
     
     <main class="container">
-        {% comment %}
-        {% for course in courses %}
-        {% endcomment %}
-
-        {% for course in object_list%}
+        {% for courseUser in object_list %}
         <div class="col">
             <a href="#">
                 <img src="https://placehold.co/600x400" alt="Some sample words">
             </a>
             <h2>
-                <a href="{{ course.pk }}">{{ course }}</a>
+                <a href="{{ courseUser.course.get_absolute_url }}">{{ courseUser.course }}</a>
             </h2>
         </div>
-        {% comment %}
-        <a href="{{ course.get_absolute_url }}"> {{ course }}</a>
-        {% endcomment %}
-        
         {% endfor %}
     </main>
 {% endblock %}

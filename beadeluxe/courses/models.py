@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
+from django.views.generic import DetailView
 
 # Create your models here.
 class Course(models.Model):
@@ -14,7 +15,7 @@ class Course(models.Model):
         return '{}: {}'.format(self.code, self.name)
 
     def get_absolute_url(self):
-        return reverse('course_detail', args=[str(self.id)])
+        return reverse('courses:detail', args=[str(self.id)])
     
     class Meta:
         ordering = ['name']
@@ -32,6 +33,9 @@ class CourseUser(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     role = models.CharField(max_length=20, choices=ROLES)
 
+    def __str__(self):
+        return self.user.fullname
+    
     class Meta:
             constraints = [
         models.UniqueConstraint(fields=['user', 'course'], name='unique_user_course')
