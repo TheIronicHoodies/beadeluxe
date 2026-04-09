@@ -10,23 +10,29 @@ from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
+# displays a single user's attendance for all their classes
 class AttendanceView(LoginRequiredMixin, View):
     def get(self, request):
+
+        # get the logged in user's courseuser object
         enrollments = CourseUser.objects.filter(user=request.user)
         attendance_data = []
 
+        # display attendance for each course the user is enrolled in
         for enrollment in enrollments:
             sessions = AttendanceSession.objects.filter(
                 course=enrollment.course
             ).order_by("date")
 
+            # get attendance records
             records = Attendance.objects.filter(course_user=enrollment)
-
             record_map = {r.session_id: r for r in records}
 
+            # so far, no sessions, cuts are 0 by default
             session_rows = []
             cuts = 0
 
+            # per class, check when they were absent
             for session in sessions:
                 record = record_map.get(session.id)
                 status = record.status if record else "absent"
@@ -55,6 +61,7 @@ class AttendanceView(LoginRequiredMixin, View):
             "attendance_data": attendance_data
         })
 
+# displays a course's attendance sheet
 class CourseAttendanceView(LoginRequiredMixin, View):
     def get(self, request, pk):
         course = Course.objects.get(pk=pk)
