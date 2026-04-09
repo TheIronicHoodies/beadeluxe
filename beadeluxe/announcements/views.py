@@ -18,6 +18,9 @@ class AnnouncementView(LoginRequiredMixin, View):
 
         if not membership:
             raise PermissionDenied
+        
+        if membership.role.lower() == "professor":
+            raise PermissionDenied
 
         announcements = course.announcements.all()
 
@@ -40,7 +43,7 @@ class CreateAnnouncementView(LoginRequiredMixin, View):
             course=course
         ).first()
 
-        if not membership or membership.role not in ["beadle", "professor"]:
+        if not membership or membership.role != "beadle":
             raise PermissionDenied
 
         return render(
@@ -56,7 +59,7 @@ class CreateAnnouncementView(LoginRequiredMixin, View):
             course=course
         ).first()
 
-        if not membership or membership.role not in ["beadle", "professor"]:
+        if not membership or membership.role != "beadle":
             raise PermissionDenied
 
         title = request.POST.get("title")
@@ -86,7 +89,7 @@ class DeleteAnnouncementView(LoginRequiredMixin, View):
             course_id=course_id
         ).first()
 
-        if not membership or membership.role not in ["beadle", "professor"]:
+        if not membership or membership.role != "beadle":
             raise PermissionDenied
 
         announcement.delete()
@@ -110,7 +113,7 @@ class EditAnnouncementView(LoginRequiredMixin, View):
             course_id=course_id
         ).first()
 
-        if not membership or membership.role not in ["beadle", "professor"]:
+        if not membership or membership.role != "beadle":
             raise PermissionDenied
 
         return render(
