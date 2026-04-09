@@ -80,12 +80,15 @@ class CourseAttendanceView(LoginRequiredMixin, View):
         # STUDENT
         return self.student_view(request, course, membership)
 
+    # for professors and beadles
     def professor_view(self, request, course):
+        # get all users in the course
         persons = CourseUser.objects.filter(course=course)
         sessions = AttendanceSession.objects.filter(course=course).order_by("date")
 
         matrix = []
 
+        # per person in the course, create a row with their name, ID number, and attendance
         for person in persons:
             row = {
                 "person": person.user.fullname,
@@ -93,6 +96,7 @@ class CourseAttendanceView(LoginRequiredMixin, View):
                 "attendance": []
             }
 
+            # per class, add a new column to mark attendance
             for session in sessions:
                 record = Attendance.objects.filter(
                     session=session,
