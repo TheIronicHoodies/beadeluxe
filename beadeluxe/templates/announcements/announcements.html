@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Announcements{% endblock %}
+
+{% block content %}
+<main>
+
+    <h1>{{ course.name }} - Announcements</h1>
+    <p><a href="{% url 'courses:detail' course.id %}">Back to Course</a></p>
+
+    {% if role == "beadle" or role == "professor" %}
+        <p><a href="{% url 'announcements:announcement_create' course.id %}">+ Create Announcement</a></p>
+    {% endif %}
+
+    <hr>
+
+    {% if announcements %}
+        {% for announcement in announcements %}
+            <div>
+                {% if role == "beadle" or role == "professor" %}
+                    <p>
+                        <a href="{% url 'announcements:announcement_update' course.id announcement.id %}">Edit</a>
+                        |
+                        <form action="{% url 'announcements:announcement_delete' course.id announcement.id %}" 
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Delete this announcement?');">
+                                Delete
+                            </button>
+                        </form>
+                    </p>
+                {% endif %}
+
+                <h3>{{ announcement.title }}</h3>
+                <p>
+                    <small>
+                        By {{ announcement.author.username }} <br>
+                        Posted: {{ announcement.formatted_created }}
+                        {% if announcement.created_at != announcement.updated_at %}
+                            <br>Updated: {{ announcement.formatted_updated }}
+                        {% endif %}
+                    </small>
+                </p>
+                <p>{{ announcement.content }}</p>
+            </div>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>No announcements yet.</p>
+    {% endif %}
+
+</main>
+{% endblock %}

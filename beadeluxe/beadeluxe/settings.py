@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'user_management',
     'accounts',
     'attendance',
-    'seat_plan',
+    'announcements',
 ]
 
 MIDDLEWARE = [
