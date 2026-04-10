@@ -28,7 +28,7 @@ class SeatPlanView(LoginRequiredMixin, View):
         matrix = []
         for i in range(0, 4):
             row = [None, None, None, None, None, None, None, None]
-            cols.append(row)
+            matrix.append(row)
 
         return render(request, "seat_plan.html", {
             "course": course
