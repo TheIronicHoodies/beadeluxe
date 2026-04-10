@@ -20,7 +20,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
-from attendance.views import course_attendance_view
+from attendance.views import CourseAttendanceView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
