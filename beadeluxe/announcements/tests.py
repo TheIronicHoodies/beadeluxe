@@ -96,6 +96,23 @@ class AnnouncementTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Announcement.objects.filter(title="Beadle Announcement").exists())
+    
+    # Check if students and professors cannot create announcements.
+    def test_invalid_create_announcement(self):
+        url = reverse("announcements:announcement_create", args=[self.course.id])
+        self.client.login(username="student", password="pass")
+        response = self.client.post(url, {
+            "title": "Student Announcement",
+            "content": "This is a student announcement."
+        })
+        self.assertEqual(response.status_code, 403)
+
+        self.client.login(username="professor", password="pass")
+        response = self.client.post(url, {
+            "title": "Professor Announcement",
+            "content": "This is a professor announcement."
+        })
+        self.assertEqual(response.status_code, 403)
 
     # Check if beadles can delete announcements.     
     def test_beadle_can_delete_announcement(self):
