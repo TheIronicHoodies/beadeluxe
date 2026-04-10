@@ -143,7 +143,7 @@ class AnnouncementTest(TestCase):
         self.assertIsNotNone(self.announcement.created_at)
         self.assertIsNotNone(self.announcement.updated_at)
         self.assertEqual(self.announcement.created_at, self.announcement.updated_at)
-    
+        
     # Check if editing announcements works correctly.
     def test_announcement_update(self):
         old_updated_at = self.announcement.updated_at

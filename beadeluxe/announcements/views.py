@@ -137,7 +137,7 @@ class EditAnnouncementView(LoginRequiredMixin, View):
             course_id=course_id
         ).first()
 
-        if not membership or membership.role not in ["beadle", "professor"]:
+        if not membership or membership.role != "beadle":
             raise PermissionDenied
 
         announcement.title = request.POST.get("title")
