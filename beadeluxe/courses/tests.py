@@ -336,3 +336,5 @@ class TestCoursesDetailPage(TestCase):
         response = self.client.get(url)
 
         self.assertInHTML('<input type="submit" value="Resign">', response.text)
+
+    

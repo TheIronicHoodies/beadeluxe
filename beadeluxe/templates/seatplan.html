@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <main>
+        <!-- put some stuff for the seatplan here -->
+        <table id="drag-n-drop">
+            {% for courseUser in object_list %}
+            <tr>
+                <td>{% courseUser.name%}</td>
+            </tr>
+            {% endfor%}
+        </table>
+    </main>
+{% endblock %}

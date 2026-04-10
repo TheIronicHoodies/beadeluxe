@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Announcement{% endblock %}
+
+{% block content %}
+<main>
+
+    <h1>Edit Announcement</h1>
+    <h2>{{ course.code }} - {{ course.name }}</h2>
+
+    <p><a href="{% url 'announcements:announcement_list' course.id %}">Back to Announcements</a></p>
+
+    <form method="POST" action="{% url 'announcements:announcement_update' course.id announcement.id %}">
+        {% csrf_token %}
+
+        <p>
+            <label for="title">Title:<br>
+                <input type="text" id="title" name="title" value="{{ announcement.title }}" required>
+            </label>
+        </p>
+
+        <p>
+            <label for="content">Content:<br>
+                <textarea id="content" name="content" rows="5" required>{{ announcement.content }}</textarea>
+            </label>
+        </p>
+
+        <p>
+            <button type="submit">Update Announcement</button>
+        </p>
+
+    </form>
+
+</main>
+{% endblock %}
