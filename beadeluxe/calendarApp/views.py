@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
@@ -8,12 +8,6 @@ from datetime import datetime
 from courses.models import Course, CourseUser
 from .models import Event
 
-
-import calendar
-from datetime import datetime
-
-import calendar
-from datetime import datetime
 
 class CalendarView(LoginRequiredMixin, View):
     def get(self, request, course_id):
@@ -77,4 +71,118 @@ class CalendarView(LoginRequiredMixin, View):
             "month_name": month_name,
         }
 
-        return render(request, "calendar.html", context)
+        return render(request, "calendar/calendar.html", context)
+
+class CreateEventView(LoginRequiredMixin, View):
+    def get(self, request, course_id):
+        course = get_object_or_404(Course, id=course_id)
+
+        membership = CourseUser.objects.filter(
+            user=request.user,
+            course=course
+        ).first()
+
+        if not membership or membership.role != "beadle":
+            raise PermissionDenied
+
+        return render(request, "calendar/calendar_create_event.html", {
+            "course": course
+        })
+
+    def post(self, request, course_id):
+        course = get_object_or_404(Course, id=course_id)
+
+        membership = CourseUser.objects.filter(
+            user=request.user,
+            course=course
+        ).first()
+
+        if not membership or membership.role != "beadle":
+            raise PermissionDenied
+
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+        date = request.POST.get("date")
+        category = request.POST.get("category")
+
+        if title and date and category:
+            Event.objects.create(
+                course=course,
+                creator=request.user,
+                title=title,
+                description=description,
+                date=date,
+                category=category
+            )
+
+        return redirect("calendarApp:calendar", course.id)
+    
+class DeleteEventView(LoginRequiredMixin, View):
+    def post(self, request, course_id, event_id):
+        course = get_object_or_404(Course, id=course_id)
+
+        membership = CourseUser.objects.filter(
+            user=request.user,
+            course=course
+        ).first()
+
+        if not membership or membership.role != "beadle":
+            raise PermissionDenied
+
+        event = get_object_or_404(
+            Event,
+            id=event_id,
+            course=course
+        )
+
+        event.delete()
+
+        return redirect("calendarApp:calendar", course_id=course.id)
+    
+class EditEventView(LoginRequiredMixin, View):
+    def get(self, request, course_id, event_id):
+        course = get_object_or_404(Course, id=course_id)
+
+        membership = CourseUser.objects.filter(
+            user=request.user,
+            course=course
+        ).first()
+
+        if not membership or membership.role != "beadle":
+            raise PermissionDenied
+
+        event = get_object_or_404(
+            Event,
+            id=event_id,
+            course=course
+        )
+
+        return render(request, "calendar/calendar_edit_event.html", {
+            "event": event,
+            "course": course
+        })
+
+    def post(self, request, course_id, event_id):
+        course = get_object_or_404(Course, id=course_id)
+
+        membership = CourseUser.objects.filter(
+            user=request.user,
+            course=course
+        ).first()
+
+        if not membership or membership.role != "beadle":
+            raise PermissionDenied
+
+        event = get_object_or_404(
+            Event,
+            id=event_id,
+            course=course
+        )
+
+        event.title = request.POST.get("title")
+        event.description = request.POST.get("description")
+        event.date = request.POST.get("date")
+        event.category = request.POST.get("category")
+        event.save()
+
+        return redirect("calendarApp:calendar", course.id)
