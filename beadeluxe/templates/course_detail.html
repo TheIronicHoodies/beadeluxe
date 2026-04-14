@@ -59,7 +59,7 @@
         <p><a href="{% url 'courses:course_attendance' object.course.pk %}">Attendance Dashboard</a></p>
         <p><a href="{% url 'announcements:announcement_list' object.course.pk %}">Announcements</a></p>
         <p><a href="">Seat Plan</a></p>
-        <p><a href="">Calendar</a></p>
+        <p><a href="{% url 'calendarApp:calendar' object.course.pk %}">Calendar</a></p>
         <p><a href="">Group Chat</a></p>
     </nav>
 {% endblock %}
