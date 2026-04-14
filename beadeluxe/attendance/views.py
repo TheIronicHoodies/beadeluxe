@@ -45,6 +45,7 @@ class AttendanceView(LoginRequiredMixin, View):
                     "status": status
                 })
 
+            # total is the number of sessions
             total = len(sessions)
             percent = ((total - cuts) / total * 100) if total > 0 else 0
 

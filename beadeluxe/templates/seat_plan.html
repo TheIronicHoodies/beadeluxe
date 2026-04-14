@@ -1,83 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Seat Plan{% endblock %}
 
 {% block content %}
     <main>
         <section id="classroom">
             <section id="seat_plan">
-                <table class="half">
-                    <tr>
-                        <td>
-                            {% if seat_plan.%}
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </table>
-                <table class="half">
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </table>
+                {% for row in seat_plan %}
+                    {% for seat in row %}
+                        {% if student.fullname %}
+                        <div class="seat">{{ student.fullname }}</div>
+                        {% else %}
+                        <div class="seat">Test</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
             </section>
             <h1>Front</h1>
         </section>
-        {% if object.role != 'student' %}
-        <a href="{% url %}">Edit Seat Plan</a>
+        {% if user.role == "beadle" %}
+            <a href="{% url 'courses:course_seat_plan' course.id %}">Edit Seat Plan</a>
         {% endif %}
     </main>
 {% endblock %}

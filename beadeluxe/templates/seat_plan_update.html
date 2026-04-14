@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Seat Plan{% endblock %}
 
 {% block content %}
     <main>
@@ -11,7 +11,9 @@
                     <tr>
                         <td>
                             <form method="POST" action="{% url seat_plan:update_seat_plan%}">
-                                <select name="student" id="student_seat"></select>
+                                <select name="student" id="student_seat">
+                                    {% for %}
+                                </select>
                             </form>
                         </td>
                         <td></td>
