@@ -30,6 +30,7 @@ urlpatterns = [
     path('courses/', include('courses.urls', namespace="courses")),
     path("logout/", LogoutView.as_view(), name="logout"),
     path('attendance/', include('attendance.urls')),
-    path('seating/', include('seat_plan.urls')),
+    path('seatplan/', include('seat_plan.urls')),
+    path('messages/', include('chat.urls'))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

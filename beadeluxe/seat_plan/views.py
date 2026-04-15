@@ -7,7 +7,7 @@ from courses.models import CourseUser, Course
 
 # Create your views here.
 
-# represents one seating arrangement
+# one seating arrangement
 class SeatPlanView(LoginRequiredMixin, View):
     def get(self, request, pk):
         course = Course.objects.get(pk=pk)
