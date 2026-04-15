@@ -186,3 +186,26 @@ class EditEventView(LoginRequiredMixin, View):
         event.save()
 
         return redirect("calendarApp:calendar", course.id)
+    
+class ToggleEventDoneView(LoginRequiredMixin, View):
+    def post(self, request, course_id, event_id):
+        course = get_object_or_404(Course, id=course_id)
+
+        membership = CourseUser.objects.filter(
+            user=request.user,
+            course=course
+        ).first()
+
+        if not membership or membership.role not in ("beadle", "student"):
+            raise PermissionDenied
+
+        event = get_object_or_404(
+            Event,
+            id=event_id,
+            course=course
+        )
+
+        event.is_done = not event.is_done
+        event.save()
+
+        return redirect("calendarApp:calendar", course.id)

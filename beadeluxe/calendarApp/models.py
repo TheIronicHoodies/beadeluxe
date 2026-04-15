@@ -23,7 +23,6 @@ class Event(models.Model):
 
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-
     date = models.DateField()
 
     category = models.CharField(
@@ -33,6 +32,8 @@ class Event(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_done = models.BooleanField(default=False)
+    
 
     def formatted_date(self):
         return self.date.strftime("%B %d, %Y")

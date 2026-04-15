@@ -3,7 +3,8 @@ from .views import (
     CalendarView,
     CreateEventView,
     EditEventView,
-    DeleteEventView
+    DeleteEventView,
+    ToggleEventDoneView
 )
 
 urlpatterns = [
@@ -18,8 +19,10 @@ urlpatterns = [
         name='event_edit'),
     path('<int:course_id>/calendar/delete/<int:event_id>/',
         DeleteEventView.as_view(),
-        name='event_delete'
-),
+        name='event_delete'),
+    path("course/<int:course_id>/event/<int:event_id>/toggle/",
+        ToggleEventDoneView.as_view(),
+        name="toggle_event_done"),
 ]
 
 app_name = 'calendarApp'

@@ -53,23 +53,34 @@
                     {% for d, evs in event_map.items %}
                         {% if d == day %}
                             {% for event in evs %}
-
-                                <div>
-                                    • <strong>{{ event.title }}</strong>
-                                    <br>
-
-                                    <small>{{ event.category }}</small>
-                                    <br>
-
-                                    {% if event.description %}
-                                        <small>{{ event.description }}</small>
-                                        <br>
-                                    {% endif %}
-
-                                    <!-- Beadle Controls -->
-                                    {% if role == "beadle" %}
-                                        <div>
-
+                                    <div class="calendar-event">
+                                        {% if event.is_done %}
+                                            <s>{{ event.title }}</s>
+                                        {% else %}
+                                            {{ event.title }}
+                                        {% endif %}
+                                        
+                                        {% if event.description %}
+                                            <small>{{ event.description }}</small>
+                                            <br>
+                                        {% endif %}
+                                    
+                                        <!-- Toggle Darkening -->
+                                         <form method="POST"
+                                               action="{% url 'calendarApp:toggle_event_done' course.id event.id %}"
+                                               style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit">
+                                                {% if event.is_done %}
+                                                    Undo
+                                                {% else %}
+                                                    Done?
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                        <!-- Beadle Controls -->
+                                        {% if role == "beadle" %}
+                                            <div>
                                             <!-- Edit -->
                                             <a href="{% url 'calendarApp:event_edit' course.id event.id %}">
                                                 Edit
@@ -77,18 +88,15 @@
 
                                             <!-- Delete -->
                                             <form method="POST"
-                                                  action="{% url 'calendarApp:event_delete' course.id event.id %}"
-                                                  style="display:inline;">
+                                                action="{% url 'calendarApp:event_delete' course.id event.id %}"
+                                                style="display:inline;">
                                                 {% csrf_token %}
                                                 <button type="submit">Delete</button>
-                                            </form>
-
+                                             </form>
                                         </div>
-                                    {% endif %}
-                                </div>
-
-                                <hr>
-
+                                {% endif %}
+                            </div>
+                            <hr>                            
                             {% endfor %}
                         {% endif %}
                     {% endfor %}
