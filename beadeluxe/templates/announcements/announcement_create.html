@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Announcement{% endblock %}
+
+{% block content %}
+<main>
+
+    <h1>Create Announcement</h1>
+    <h2>{{ course.code }} - {{ course.name }}</h2>
+
+    <p><a href="{% url 'announcements:announcement_list' course.id %}">Back to Announcements</a></p>
+
+    <form method="POST" action="{% url 'announcements:announcement_create' course.id %}">
+        {% csrf_token %}
+
+        <p>
+            <label for="title">Title:<br>
+                <input type="text" id="title" name="title" required>
+            </label>
+        </p>
+
+        <p>
+            <label for="content">Content:<br>
+                <textarea id="content" name="content" rows="5" required></textarea>
+            </label>
+        </p>
+
+        <p>
+            <button type="submit">Post Announcement</button>
+        </p>
+
+    </form>
+
+</main>
+{% endblock %}
