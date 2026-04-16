@@ -49,9 +49,9 @@
             }
 
             .seat {
-                min-width: 80px;
+                min-width: 90px;
                 min-height: 60px;
-                max-width: 80px;
+                max-width: 90px;
                 max-height: 60px;
                 border: 1px solid #aaa;
                 text-align: center;
@@ -87,6 +87,9 @@
         <div class="seat-layout">
             <div id="student-panel">
                 <h3 style="font-size: 18px;">STUDENTS</h3>
+                {% if user_role == "beadle" %}
+                    <h4 style="font-size: 12px"><a href="{% url 'courses:course_seat_plan' course.id %}">Edit layout</a></h4>
+                {% endif %}
                 {% for student in students %}
                     <div class="student" draggable="true" data-id="{{ student.id }}">
                         {{ student.user.fullname }}
@@ -120,9 +123,6 @@
                     </table>
                 </section>
             </section>
-            {% if user.role == "beadle" %}
-                <a href="{% url 'courses:course_seat_plan' course.id %}">Edit Seat Plan</a>
-            {% endif %}
         </div>
     </main>
 
@@ -184,6 +184,30 @@
             student_id: e.target.dataset.id
         }).then(() => location.reload());
     });
+
+    // only allow students to move themselves
+    students.forEach(student => {
+        student.ondragstart = e => {
+            if (userRole !== "beadle" && userRole !== "professor") {
+                e.preventDefault();
+                return;
+            }
+            e.dataTransfer.setData("id", student.dataset.id);
+        };
+    });
+
+    // only allow students to click themselves
+    if (userRole === "student") {
+        seats.forEach(seat => {
+            seat.onclick = () => {
+                postData(updateURL, {
+                    student_id: userCourseId,
+                    row: seat.dataset.row,
+                    col: seat.dataset.col
+                }).then(() => location.reload());
+            };
+        });
+    }
 </script>
 
 {% endblock %}

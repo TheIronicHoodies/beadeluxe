@@ -20,8 +20,8 @@ class SeatPlanView(LoginRequiredMixin, View):
             course=course
         ).first()
 
-        if membership.role not in ["beadle", "professor"]:
-            raise PermissionDenied
+        # if membership.role not in ["beadle", "professor"]:
+        #     raise PermissionDenied
 
         # get all users in the course
         # students = CourseUser.objects.filter(
@@ -55,10 +55,11 @@ class SeatPlanView(LoginRequiredMixin, View):
 
         return render(request, "seat_plan.html", {
             "seat_plan": matrix,
-            "seat_map": seat_map,
             "students": students,
             "assigned": assigned,
             "course": course,
+            "user_role": membership.role,
+            "user_course_id": membership.id,
         })
 
 class UpdateSeatPlanView(LoginRequiredMixin, View):
@@ -72,7 +73,26 @@ class UpdateSeatPlanView(LoginRequiredMixin, View):
         course_user = CourseUser.objects.get(id=student_id)
         course = course_user.course
 
-        # if seated already, remove existing seat
+        membership = CourseUser.objects.filter(
+            user=request.user,
+            course=course
+        ).first()
+
+        # students can only move themselves
+        if membership.role == "student" and str(student_id) != str(membership.id):
+            raise PermissionDenied
+
+        # prevent them taking an occupied seat
+        existing = SeatAssignment.objects.filter(
+            course=course,
+            row=row,
+            col=col
+        ).first()
+
+        if existing and existing.course_user != course_user:
+            raise PermissionDenied
+
+        # remove previous seat (if any)
         SeatAssignment.objects.filter(course_user=course_user).delete()
 
         # assign new seat
@@ -82,6 +102,8 @@ class UpdateSeatPlanView(LoginRequiredMixin, View):
             row=row,
             col=col
         )
+
+        return JsonResponse({"status": "ok"})
     
 class RemoveSeatAssignmentView(LoginRequiredMixin, View):
     def post(self, request):
@@ -93,10 +115,11 @@ class RemoveSeatAssignmentView(LoginRequiredMixin, View):
             user=request.user,
             course=course_user.course
         ).first()
-        
-        if membership.role not in ["beadle", "professor"]:
-            raise PermissionDenied
 
+        # students can only remove themselves
+        if membership.role == "student" and str(student_id) != str(membership.id):
+            raise PermissionDenied
+            
         # remove seat
         SeatAssignment.objects.filter(course_user=course_user).delete()
 
