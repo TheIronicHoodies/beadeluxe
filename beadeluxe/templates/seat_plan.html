@@ -132,18 +132,13 @@
     const userRole = "{{ user_role }}";
     const userCourseId = "{{ user_course_id }}";
 
-    const students = document.querySelectorAll(".student");
-
-    // i hate django
-    function getCSRFToken() {
-        return document.cookie
-            .split("; ")
+    const getCSRFToken = () =>
+        document.cookie.split("; ")
             .find(row => row.startsWith("csrftoken="))
             ?.split("=")[1];
-    }
 
-    function postData(url, data) {
-        return fetch(url, {
+    const postData = (url, data) =>
+        fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -151,71 +146,56 @@
             },
             body: JSON.stringify(data)
         });
-    }
 
-    // make students draggable
+    // dragging
     document.addEventListener("dragstart", e => {
-        if (!e.target.classList.contains("student")) return;
-        e.dataTransfer.setData("id", e.target.dataset.id); // store id of dragged student
-    });
+        const student = e.target.closest(".student");
+        if (!student) return;
 
-    // allow dropping
-    document.addEventListener("dragover", e => {
-        if (e.target.classList.contains("seat")) {
+        // students can only move themselves
+        if (userRole === "student" && student.dataset.id != userCourseId) {
+            alert("You can only edit your own seat assignment.");
             e.preventDefault();
+            return;
         }
+
+        e.dataTransfer.setData("id", student.dataset.id);
     });
 
-    // drop handling
+    // dropping
+    document.addEventListener("dragover", e => {
+        if (e.target.closest(".seat")) e.preventDefault();
+    });
+
     document.addEventListener("drop", e => {
-        if (!e.target.classList.contains("seat")) return;
+        const seat = e.target.closest(".seat");
+        if (!seat) return;
 
         e.preventDefault();
-        const id = e.dataTransfer.getData("id");
 
         postData(updateURL, {
-            student_id: id,
-            row: e.target.dataset.row,
-            col: e.target.dataset.col
+            student_id: e.dataTransfer.getData("id"),
+            row: seat.dataset.row,
+            col: seat.dataset.col
         }).then(() => location.reload());
     });
 
-    // seat clearing
+    // removing by clicking
     document.addEventListener("click", e => {
         const person = e.target.closest(".occupied");
         if (!person) return;
 
-        // only allow students to remove themselves
+        // students can only remove themselves
         if (userRole === "student" && person.dataset.id != userCourseId) {
-            alert("You can only edit your own seat assignment.");   
+            alert("You can only edit your own seat assignment.");
             return;
         }
 
-        // confirmation pop-up
         if (!confirm("Remove this student from their seat?")) return;
 
         postData(removeURL, {
             student_id: person.dataset.id
         }).then(() => location.reload());
-    });
-
-    // only allow students to move themselves
-    students.forEach(student => {
-        student.ondragstart = e => {
-            if (userRole === "student" && student.dataset.id != userCourseId) {
-                alert("You can only move your own seat.");
-                e.preventDefault();
-                return;
-            }
-
-            // edge case
-            if (userRole !== "student" && userRole !== "beadle" && userRole !== "professor") {
-                e.preventDefault();
-                return;
-            }
-
-            e.dataTransfer.setData("id", student.dataset.id);
-        };
     });
 </script>
 
