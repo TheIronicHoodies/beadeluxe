@@ -5,22 +5,185 @@
 
 {% block content %}
     <main>
-        <section id="classroom">
-            <section id="seat_plan">
-                {% for row in seat_plan %}
-                    {% for seat in row %}
-                        {% if student.fullname %}
-                        <div class="seat">{{ student.fullname }}</div>
-                        {% else %}
-                        <div class="seat">Test</div>
-                        {% endif %}
-                    {% endfor %}
+        <style>
+            .seat-layout {
+                display: flex;
+                align-items: flex-start;
+                gap: 100px;
+                margin: 80px auto 40px;
+                width: 90%;
+                max-width: 1200px;
+            }
+            
+            #student-panel {
+                margin-top: -80px;
+                width: 240px;
+                min-height: 400px;
+                background: #f6f8fa;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+                margin-bottom: 15px;
+                font-size: 16px;
+            }
+
+            .student {
+                padding: 10px;
+                margin-bottom: 12px;
+                background: white;
+                border: 1px solid #ddd;
+                cursor: grab;
+            }
+
+            .student:hover {
+                background: #e7ebf1;
+                transform: translateY(-1px);
+            }
+            
+            #seat_plan {
+                width: 100%;
+            }
+
+            #seat_plan table {
+                border-spacing: 6px;
+            }
+
+            .seat {
+                min-width: 80px;
+                min-height: 60px;
+                max-width: 80px;
+                max-height: 60px;
+                border: 1px solid #aaa;
+                text-align: center;
+                vertical-align: middle;
+                padding: 4px;
+            }
+
+            .seat:hover {
+                background: #e7ebf1;
+            }
+
+            .occupied {
+                background: #c3d6f1;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                padding: 4px;
+            }
+
+            #classroom {
+                margin-top: 100px;
+            }
+
+            #classroom h1 {
+                margin-top: 20px;
+                font-size: 16px;
+                color: #555;
+            }
+
+        </style>
+        <div class="seat-layout">
+            <div id="student-panel">
+                <h3 style="font-size: 18px;">STUDENTS</h3>
+                {% for student in students %}
+                    <div class="student" draggable="true" data-id="{{ student.id }}">
+                        {{ student.user.fullname }}
+                        <span style="font-size: 12px; color: gray;">
+                            - {{ student.role }}
+                        </span>
+                    </div>
                 {% endfor %}
+            </div>
+            <section id="classroom">
+                <section id="seat_plan">
+                    <table>
+                        {% for row in seat_plan %}
+                        <tr>
+                            {% for occupant in row %}
+                                <!-- counters used in js later -->
+                                <td class="seat"
+                                    data-row="{{ forloop.parentloop.counter0 }}"
+                                    data-col="{{ forloop.counter0 }}">
+
+                                    {% if occupant %}
+                                        <div class="occupied" data-id="{{ occupant.id }}">
+                                            {{ occupant.user.fullname }}
+                                        </div>
+                                    {% endif %}
+
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </section>
             </section>
-            <h1>Front</h1>
-        </section>
-        {% if user.role == "beadle" %}
-            <a href="{% url 'courses:course_seat_plan' course.id %}">Edit Seat Plan</a>
-        {% endif %}
+            {% if user.role == "beadle" %}
+                <a href="{% url 'courses:course_seat_plan' course.id %}">Edit Seat Plan</a>
+            {% endif %}
+        </div>
     </main>
+
+<script>
+    const updateURL = "{% url 'seat_plan:update_seat_plan' %}";
+    const removeURL = "{% url 'seat_plan:remove_seat' %}";
+
+    // i hate django
+    function getCSRFToken() {
+        return document.cookie
+            .split("; ")
+            .find(row => row.startsWith("csrftoken="))
+            ?.split("=")[1];
+    }
+
+    function postData(url, data) {
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify(data)
+        });
+    }
+
+    // make students draggable
+    document.addEventListener("dragstart", e => {
+        if (!e.target.classList.contains("student")) return;
+        e.dataTransfer.setData("id", e.target.dataset.id); // store id of dragged student
+    });
+
+    // allow dropping
+    document.addEventListener("dragover", e => {
+        if (e.target.classList.contains("seat")) {
+            e.preventDefault();
+        }
+    });
+
+    // drop handling
+    document.addEventListener("drop", e => {
+        if (!e.target.classList.contains("seat")) return;
+
+        e.preventDefault();
+        const id = e.dataTransfer.getData("id");
+
+        postData(updateURL, {
+            student_id: id,
+            row: e.target.dataset.row,
+            col: e.target.dataset.col
+        }).then(() => location.reload());
+    });
+
+    // seat clearing
+    document.addEventListener("click", e => {
+        if (!e.target.classList.contains("occupied")) return;
+
+        postData(removeURL, {
+            student_id: e.target.dataset.id
+        }).then(() => location.reload());
+    });
+</script>
+
 {% endblock %}
