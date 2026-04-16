@@ -129,6 +129,10 @@
 <script>
     const updateURL = "{% url 'seat_plan:update_seat_plan' %}";
     const removeURL = "{% url 'seat_plan:remove_seat' %}";
+    const userRole = "{{ user_role }}";
+    const userCourseId = "{{ user_course_id }}";
+
+    const students = document.querySelectorAll(".student");
 
     // i hate django
     function getCSRFToken() {
@@ -178,36 +182,41 @@
 
     // seat clearing
     document.addEventListener("click", e => {
-        if (!e.target.classList.contains("occupied")) return;
+        const person = e.target.closest(".occupied");
+        if (!person) return;
+
+        // only allow students to remove themselves
+        if (userRole === "student" && person.dataset.id != userCourseId) {
+            alert("You can only edit your own seat assignment.");   
+            return;
+        }
+
+        // confirmation pop-up
+        if (!confirm("Remove this student from their seat?")) return;
 
         postData(removeURL, {
-            student_id: e.target.dataset.id
+            student_id: person.dataset.id
         }).then(() => location.reload());
     });
 
     // only allow students to move themselves
     students.forEach(student => {
         student.ondragstart = e => {
-            if (userRole !== "beadle" && userRole !== "professor") {
+            if (userRole === "student" && student.dataset.id != userCourseId) {
+                alert("You can only move your own seat.");
                 e.preventDefault();
                 return;
             }
+
+            // edge case
+            if (userRole !== "student" && userRole !== "beadle" && userRole !== "professor") {
+                e.preventDefault();
+                return;
+            }
+
             e.dataTransfer.setData("id", student.dataset.id);
         };
     });
-
-    // only allow students to click themselves
-    if (userRole === "student") {
-        seats.forEach(seat => {
-            seat.onclick = () => {
-                postData(updateURL, {
-                    student_id: userCourseId,
-                    row: seat.dataset.row,
-                    col: seat.dataset.col
-                }).then(() => location.reload());
-            };
-        });
-    }
 </script>
 
 {% endblock %}
