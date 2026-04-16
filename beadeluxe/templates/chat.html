@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<main>
+    <section id="messages">
+        <div id="texts"></div>
+        <div id="enter_text">
+            <input type="hidden" name="fullname">
+            <input type="hidden" name="timestamp">
+            <input type="text" name="content">
+        </div>
+    </section>
+</main>
+{% endblock %}
