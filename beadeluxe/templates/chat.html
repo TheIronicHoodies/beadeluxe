@@ -29,5 +29,15 @@
             </div>
         </form>
     </section>
+    <script language="javascript">
+        var ws_url = 'ws://' + window.location.host + '/ws/ticks/';
+        var ticksSocket = new WebSocket(ws_url);
+
+        ticksSocket.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+            console.log('data', data);
+            // do whatever required with received data ...
+        };
+    </script>
 </main>
 {% endblock %}
