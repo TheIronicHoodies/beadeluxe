@@ -6,18 +6,20 @@
 {% block content %}
     <main>
         <style>
+            main {
+                margin-top: 80px;
+            }
+            
             .seat-layout {
                 display: flex;
                 align-items: flex-start;
-                gap: 100px;
-                margin: 80px auto 40px;
+                margin: 0 auto 40px;
                 width: 90%;
-                max-width: 1200px;
+                max-width: 1400px;
             }
             
             #student-panel {
-                margin-top: -80px;
-                width: 240px;
+                flex: 0 0 240px;
                 min-height: 400px;
                 background: #f6f8fa;
                 padding: 20px;
@@ -41,12 +43,12 @@
             }
             
             #seat_plan {
-                width: 100%;
+                width: auto;
             }
 
             #seat_plan table {
                 border-spacing: 6px;
-                margin-top: 50px;
+                padding-top: 300px;
             }
 
             .seat {
@@ -58,6 +60,12 @@
                 text-align: center;
                 vertical-align: middle;
                 padding: 4px;
+            }
+            .empty {
+                min-width: 90px;
+                min-height: 60px;
+                border: none;
+                visibility: hidden;
             }
 
             .seat:hover {
@@ -75,7 +83,10 @@
             }
 
             #classroom {
-                margin-top: 100px;
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                padding-left: 40px;
             }
 
             #classroom h1 {
@@ -89,7 +100,24 @@
             <div id="student-panel">
                 <h3 style="font-size: 18px;">STUDENTS</h3>
                 {% if user_role == "beadle" %}
-                    <h4 style="font-size: 12px"><a href="{% url 'courses:course_seat_plan' course.id %}">Edit layout</a></h4>
+                    {% if not edit_mode %}
+                        <h4><a href="?edit_layout=1">Edit layout</a></h4>
+                    {% else %}
+                        <form method="post" action="{% url 'courses:course_layout_update' course.id %}">
+                            {% csrf_token %}
+                            
+                            <select name="layout_type">
+                                <option value="lecture">Lecture</option>
+                                <option value="compact">Compact</option>
+                                <option value="exam">Exam</option>
+                                <option value="donut">Donut</option>
+                                <option value="custom">Custom</option> 
+                            </select>
+                           
+                            <!-- {{ form.layout_template }} -->
+                            <button type="submit">Apply</button>
+                        </form>
+                    {% endif %}
                 {% endif %}
                 {% for student in students %}
                     <div class="student" draggable="true" data-id="{{ student.id }}">
@@ -103,21 +131,30 @@
             <section id="classroom">
                 <section id="seat_plan">
                     <table>
+                        <tr>
+                            <th colspan="{{ seat_plan.0|length }}" style="text-align: center;">
+                                FRONT
+                            </th>
+                        </tr>
                         {% for row in seat_plan %}
                         <tr>
-                            {% for occupant in row %}
-                                <!-- counters used in js later -->
-                                <td class="seat"
-                                    data-row="{{ forloop.parentloop.counter0 }}"
-                                    data-col="{{ forloop.counter0 }}">
+                            
+                            {% for cell in row %}
+                                <!-- checks if seat exists (in case of non-rectangular layouts) -->
+                                {% if cell.exists %}
+                                    <td class="seat"
+                                        data-row="{{ forloop.parentloop.counter0 }}"
+                                        data-col="{{ forloop.counter0 }}">
 
-                                    {% if occupant %}
-                                        <div class="occupied" data-id="{{ occupant.id }}">
-                                            {{ occupant.user.fullname }}
-                                        </div>
-                                    {% endif %}
-
-                                </td>
+                                        {% if cell.occupant %}
+                                            <div class="occupied" data-id="{{ cell.occupant.id }}">
+                                                {{ cell.occupant.user.fullname }}
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                {% else %}
+                                    <td class="empty"></td>
+                                {% endif %}
                             {% endfor %}
                         </tr>
                         {% endfor %}

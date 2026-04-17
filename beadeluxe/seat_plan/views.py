@@ -6,27 +6,21 @@ from django.views.generic import View
 from django.views.decorators.http import require_POST
 from django.contrib.auth import get_user_model
 from courses.models import CourseUser, Course
+# from courses.forms import CourseLayoutForm
 from .models import SeatAssignment
 from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
+# create helper func to get user's membership in a course
+def get_membership(user, course):
+    return CourseUser.objects.filter(user=user, course=course).first()
+
 # represents one seating arrangement
 class SeatPlanView(LoginRequiredMixin, View):
     def get(self, request, pk):
         course = Course.objects.get(pk=pk)
-        membership = CourseUser.objects.filter(
-            user=request.user,
-            course=course
-        ).first()
-
-        # if membership.role not in ["beadle", "professor"]:
-        #     raise PermissionDenied
-
-        # get all users in the course
-        # students = CourseUser.objects.filter(
-        #     course=course
-        # )
+        membership = get_membership(request.user, course)
 
         # get all students and beadles
         students = CourseUser.objects.filter(
@@ -35,7 +29,6 @@ class SeatPlanView(LoginRequiredMixin, View):
         )
 
         assigned = SeatAssignment.objects.filter(course=course)
-        assigned_ids = assigned.values_list("course_user_id", flat=True)
 
         # create dictionary where each (row, col) seat maps to the user assigned to it
         seat_map = {
@@ -43,29 +36,35 @@ class SeatPlanView(LoginRequiredMixin, View):
             for a in assigned
         }
 
-        # matrix = []
-
-        # # 5x8 seatplan matrix based on dictionary
-        # for r in range(course.rows):
-        #     row = []
-        #     for c in range(course.cols):
-        #         occupant = seat_map.get((r, c))
-        #         row.append(occupant) # will be None if no occupant
-        #     matrix.append(row)
-
         layout = course.layout or []
 
-        matrix = []
+        # matrix = []
 
-        for r, row_layout in enumerate(layout):
-            row = []
-            for c, seat_exists in enumerate(row_layout):
-                if seat_exists:
-                    occupant = seat_map.get((r, c))
-                else:
-                    occupant = None  # empty space
-                row.append(occupant)
-            matrix.append(row)
+        # for r, row_layout in enumerate(layout):
+        #     row = []
+        #     for c, seat_exists in enumerate(row_layout):
+        #         if seat_exists:
+        #             occupant = seat_map.get((r, c))
+        #         else:
+        #             occupant = None  # empty space
+        #         row.append({
+        #             "exists": seat_exists,
+        #             "occupant": occupant
+        #         })
+        #     matrix.append(row)
+
+        matrix = [
+            [
+                {
+                    "exists": seat_exists,                                     # whether this seat exists in the layout
+                    "occupant": seat_map.get((r, c)) if seat_exists else None  # who is sitting here (if seat exists)
+                }
+                for c, seat_exists in enumerate(row_layout)
+            ]
+            for r, row_layout in enumerate(layout)
+        ]
+
+        edit_mode = request.GET.get("edit_layout") == "1"
 
         return render(request, "seat_plan.html", {
             "seat_plan": matrix,
@@ -74,6 +73,8 @@ class SeatPlanView(LoginRequiredMixin, View):
             "course": course,
             "user_role": membership.role,
             "user_course_id": membership.id,
+            "edit_mode": edit_mode,
+            # "form": CourseLayoutForm(instance=course),
         })
 
 class UpdateSeatPlanView(LoginRequiredMixin, View):
@@ -87,10 +88,7 @@ class UpdateSeatPlanView(LoginRequiredMixin, View):
         course_user = CourseUser.objects.get(id=student_id)
         course = course_user.course
 
-        membership = CourseUser.objects.filter(
-            user=request.user,
-            course=course
-        ).first()
+        membership = get_membership(request.user, course)
 
         # students can only move themselves
         if membership.role == "student" and str(student_id) != str(membership.id):
@@ -125,10 +123,7 @@ class RemoveSeatAssignmentView(LoginRequiredMixin, View):
         
         student_id = data.get("student_id")
         course_user = CourseUser.objects.get(id=student_id)
-        membership = CourseUser.objects.filter(
-            user=request.user,
-            course=course_user.course
-        ).first()
+        membership = get_membership(request.user, course_user.course)
 
         # students can only remove themselves
         if membership.role == "student" and str(student_id) != str(membership.id):

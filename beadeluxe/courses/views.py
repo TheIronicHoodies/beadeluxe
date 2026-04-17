@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic import View
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from .forms import CourseLayoutForm
@@ -75,23 +76,27 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
             cu.save()
         return self.get(request, *args, **kwargs)
 
-class CourseLayoutUpdateView(LoginRequiredMixin, UpdateView):
-    model = Course
-    form_class = CourseLayoutForm
-    template_name = "course_layout_update.html"
+class CourseLayoutUpdateView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        course = Course.objects.get(pk=pk)
 
-    def get_success_url(self):
-        return reverse("courses:detail", args=[self.object.pk])
+        # Template, database based approach
+        # template_id = request.POST.get("layout_template")
+        # course.layout_template_id = template_id
+        # course.layout = course.generate_layout()
 
-    def form_valid(self, form):
-        course = form.save(commit=False)
+        # SeatAssignment.objects.filter(course=course).delete()
+        # course.save()
 
-        # regenerate layout if not custom
-        if course.layout_type != "custom":
+        layout_type = request.POST.get("layout_type")
+        course.layout_type = layout_type
+
+        if layout_type != "custom":
             course.layout = course.generate_layout()
 
             # reset seats
             SeatAssignment.objects.filter(course=course).delete()
 
         course.save()
-        return super().form_valid(form)
+
+        return redirect("courses:course_seat_plan", pk=pk)

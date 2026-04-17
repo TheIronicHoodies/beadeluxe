@@ -19,10 +19,45 @@ LAYOUT_TEMPLATES = {
         [1,0,1,0,1],
         [0,1,0,1,0],
         [1,0,1,0,1],
+    ],
+    "donut": [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
     ]
 }
 
 # Create your models here.
+# class LayoutTemplate(models.Model):
+#     name = models.CharField(max_length=50, unique=True)
+#     layout = models.JSONField()
+
+#     def __str__(self):
+#         return self.name
+
+# class Course(models.Model):
+
+    # layout_template = models.ForeignKey(
+    #     LayoutTemplate,
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True
+    # )
+
+    # layout = models.JSONField(default=list, blank=True)
+
+    # def save(self, *args, **kwargs):
+    #     if self.layout_template:
+    #         self.layout = self.layout_template.layout
+    #     super().save(*args, **kwargs)
+
+    # def generate_layout(self):
+    #     if self.layout_template:
+    #         return self.layout_template.layout
+    #     return self.layout
+
 class Course(models.Model):
     code = models.CharField(max_length=10)
     name = models.CharField(max_length=100)
@@ -36,6 +71,7 @@ class Course(models.Model):
             ("lecture", "Lecture"),
             ("compact", "Compact"),
             ("exam", "Exam"),
+            ("donut", "Donut"),
             ("custom", "Custom"),
         ],
         default="lecture"
