@@ -31,5 +31,6 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path('attendance/', include('attendance.urls')),
     path('seating/', include('seat_plan.urls')),
+    path('courses/', include('announcements.urls'))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

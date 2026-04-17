@@ -83,8 +83,12 @@ class CourseAttendanceView(LoginRequiredMixin, View):
 
     # for professors and beadles
     def professor_view(self, request, course):
-        # get all users in the course
+        role_filter = request.GET.get("role")
+
         persons = CourseUser.objects.filter(course=course)
+
+        if role_filter in ["student", "professor", "beadle"]:
+            persons = persons.filter(role=role_filter)
         sessions = AttendanceSession.objects.filter(course=course).order_by("date")
 
         matrix = []
