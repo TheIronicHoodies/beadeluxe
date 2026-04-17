@@ -105,4 +105,13 @@ class TestModels(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
     
-    
+    def profanity_is_censored(self):
+        url = reverse("chat:messages", args=[self.course.id])
+        self.client.login(username="student", password="pass")
+
+        response = self.client.post(url, {
+            "content": "fuck you",
+            "timestamp": datetime.datetime(2026, 3, 13, 12, 5)
+        })
+
+        self.assertEqual(response, "**** you")
