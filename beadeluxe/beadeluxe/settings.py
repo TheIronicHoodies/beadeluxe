@@ -46,7 +46,9 @@ INSTALLED_APPS = [
     'accounts',
     'attendance',
     'seat_plan',
+    'chat',
     'announcements',
+    'calendarApp',
 ]
 
 MIDDLEWARE = [
