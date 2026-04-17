@@ -9,11 +9,11 @@
         <div id="texts">
             {% for message in messages %}
                 <div class="message">
-                    <div class="msg-metadata">
-                        <span class="message-fullname">{{message.user.fullname}}</span>
-                        <span class="message-timestamp">{{message.timestamp}}</span>
+                    <div class="msg_metadata">
+                        <span class="message_sender">{{message.user}}</span>
+                        <span class="message_timestamp">{{message.timestamp}}</span>
                     </div>
-                    <div class="msg-texts">
+                    <div class="msg_texts">
                         <p>{{message.content}}</p>
                     </div>
                 </div>
