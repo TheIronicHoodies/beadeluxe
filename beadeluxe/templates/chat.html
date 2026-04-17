@@ -6,8 +6,21 @@
 {% block content %}
 <main>
     <section id="messages">
-        <div id="texts"></div>
-        <form id="enter_text">
+        <div id="texts">
+            {% for message in messages %}
+                <div class="message">
+                    <div class="msg-metadata">
+                        <span class="message-fullname">{{message.user.fullname}}</span>
+                        <span class="message-timestamp">{{message.timestamp}}</span>
+                    </div>
+                    <div class="msg-texts">
+                        <p>{{message.content}}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <form id="enter_text" method="post" action="">
+            {% csrf_token %}
             <input type="hidden" name="fullname">
             <input type="hidden" name="timestamp">
             <div id="msg_input_group">
