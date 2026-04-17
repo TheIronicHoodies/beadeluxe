@@ -43,14 +43,28 @@ class SeatPlanView(LoginRequiredMixin, View):
             for a in assigned
         }
 
+        # matrix = []
+
+        # # 5x8 seatplan matrix based on dictionary
+        # for r in range(course.rows):
+        #     row = []
+        #     for c in range(course.cols):
+        #         occupant = seat_map.get((r, c))
+        #         row.append(occupant) # will be None if no occupant
+        #     matrix.append(row)
+
+        layout = course.layout or []
+
         matrix = []
 
-        # 5x8 seatplan matrix based on dictionary
-        for r in range(5):
+        for r, row_layout in enumerate(layout):
             row = []
-            for c in range(8):
-                occupant = seat_map.get((r, c))
-                row.append(occupant) # will be None if no occupant
+            for c, seat_exists in enumerate(row_layout):
+                if seat_exists:
+                    occupant = seat_map.get((r, c))
+                else:
+                    occupant = None  # empty space
+                row.append(occupant)
             matrix.append(row)
 
         return render(request, "seat_plan.html", {

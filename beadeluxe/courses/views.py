@@ -1,7 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
+from django.urls import reverse
 from django.contrib.auth import get_user_model
+from .forms import CourseLayoutForm
+from seat_plan.models import SeatAssignment
 
 from .models import Course, CourseUser
 
@@ -70,3 +74,24 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
             cu.role = "student"
             cu.save()
         return self.get(request, *args, **kwargs)
+
+class CourseLayoutUpdateView(LoginRequiredMixin, UpdateView):
+    model = Course
+    form_class = CourseLayoutForm
+    template_name = "course_layout_update.html"
+
+    def get_success_url(self):
+        return reverse("courses:detail", args=[self.object.pk])
+
+    def form_valid(self, form):
+        course = form.save(commit=False)
+
+        # regenerate layout if not custom
+        if course.layout_type != "custom":
+            course.layout = course.generate_layout()
+
+            # reset seats
+            SeatAssignment.objects.filter(course=course).delete()
+
+        course.save()
+        return super().form_valid(form)

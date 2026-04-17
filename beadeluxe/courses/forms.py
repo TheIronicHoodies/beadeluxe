@@ -1,7 +1,7 @@
 from django import forms
 from .models import Course
 
-class CourseForm(forms.ModelForm):
+class CourseLayoutForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = ["layout_type"]  # only allow template selection
