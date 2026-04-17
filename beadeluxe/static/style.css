@@ -113,6 +113,16 @@ section {
     }
 }
 
+.message_sender {
+    font-size: 0.8em;
+    opacity: 1;
+}
+
+.message_timestamp {
+    font-size: 0.6rem;
+    opacity: 0.5;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -137,6 +147,13 @@ section {
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
+}
+
+.msg_texts {
+    background-color: #aef;
+    border-radius: 1em;
+    padding: 0.5 1em;
+    width: fit-content;
 }
 
 .seat {
@@ -175,7 +192,7 @@ section {
 
 #messages {
     align-items: center;
-    background-color: #aef;
+    background-color: #ffa;
     border-radius: 1em;
     display: flex;
     flex-direction: column;
@@ -183,10 +200,11 @@ section {
     margin: 1em;
     padding: 1em;
     max-width: 100%;
+    row-gap: 1em;
     width: 90vw;
 }
 
-#messages * {
+#messages > * {
     width: 100%;
 }
 
@@ -205,12 +223,23 @@ section {
     width: 100%;
 }
 
+#msg_input_group #submit {
+    width: 10%;
+}
+
 #not-found {
     font-size: 4em;
 }
 
-#msg_input_group #submit {
-    width: 10%;
+#texts {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    row-gap: 1em;
+}
+
+#texts .message {
+    max-width: 75%;
 }
 
 #user-reg {
