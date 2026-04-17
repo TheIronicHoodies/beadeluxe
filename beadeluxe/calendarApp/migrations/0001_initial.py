@@ -12,16 +12,19 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Announcement',
+            name='Event',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
-                ('content', models.TextField()),
+                ('description', models.TextField(blank=True, null=True)),
+                ('date', models.DateField()),
+                ('category', models.CharField(choices=[('assessment', 'Assessment'), ('deliverable', 'Deliverable')], max_length=20)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
+                ('is_done', models.BooleanField(default=False)),
             ],
             options={
-                'ordering': ['-created_at'],
+                'ordering': ['date'],
             },
         ),
     ]

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Event{% endblock %}
+
+{% block content %}
+<main>
+
+    <h1>Edit Event</h1>
+
+    <h2>{{ course.code }} - {{ course.name }}</h2>
+
+    <p>
+        <a href="{% url 'calendarApp:calendar' course.id %}">
+            ← Back to Calendar
+        </a>
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <p>
+            <label>Title:</label><br>
+            <input type="text" name="title" value="{{ event.title }}" required>
+        </p>
+
+        <p>
+            <label>Description:</label><br>
+            <textarea name="description" rows="4" cols="40">{{ event.description }}</textarea>
+        </p>
+
+        <p>
+            <label>Date:</label><br>
+            <input type="date" name="date" value="{{ event.date|date:'Y-m-d' }}" required>
+        </p>
+
+        <p>
+            <label>Category:</label><br>
+            <select name="category" required>
+                <option value="assessment"
+                    {% if event.category == "assessment" %}selected{% endif %}>
+                    Assessment
+                </option>
+
+                <option value="deliverable"
+                    {% if event.category == "deliverable" %}selected{% endif %}>
+                    Deliverable
+                </option>
+            </select>
+        </p>
+
+        <button type="submit">Save Changes</button>
+
+    </form>
+
+</main>
+{% endblock %}
