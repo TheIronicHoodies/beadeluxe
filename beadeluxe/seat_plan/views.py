@@ -1,10 +1,11 @@
-import json
+import json, random
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.views.decorators.http import require_POST
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 from courses.models import CourseUser, Course
 # from courses.forms import CourseLayoutForm
 from .models import SeatAssignment
@@ -133,3 +134,61 @@ class RemoveSeatAssignmentView(LoginRequiredMixin, View):
         SeatAssignment.objects.filter(course_user=course_user).delete()
 
         return JsonResponse({"status": "removed"})
+    
+class AutoAssignSeatsView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        course = Course.objects.get(pk=pk)
+        membership = get_membership(request.user, course)
+
+        if not membership or membership.role != "beadle":
+            raise PermissionDenied
+
+        mode = request.POST.get("mode")
+
+        # get list of students and beadles in course
+        students = list(
+            CourseUser.objects.filter(
+                course=course,
+                role__in=["student", "beadle"]
+            ).select_related("user")
+        )
+
+        # get list of active seats
+        seats = [
+            (r, c)
+            for r, row in enumerate(course.layout or [])
+            for c, exists in enumerate(row)
+            if exists
+        ]
+
+        # if there are most students than seats, send error message to template
+        if len(students) > len(seats):
+            messages.error(request, "Not enough seats for all students.")
+            return redirect("courses:course_seat_plan", pk=pk)
+
+        # choose ordering
+        if mode == "random":
+            random.shuffle(students)
+        elif mode == "alphabetical":
+            students.sort(
+                key=lambda s: ( # sort by last name, then firstname
+                    s.user.fullname.split()[-1].lower(),
+                    s.user.fullname.lower()
+                )
+            )
+
+        # clear existing assignments
+        SeatAssignment.objects.filter(course=course).delete()
+
+        # assign seats
+        SeatAssignment.objects.bulk_create([
+            SeatAssignment(
+                course=course,
+                course_user=student,
+                row=r,
+                col=c
+            )
+            for student, (r, c) in zip(students, seats)
+        ])
+
+        return redirect("courses:course_seat_plan", pk=pk)

@@ -72,6 +72,10 @@
                 background: #e7ebf1;
             }
 
+            button {
+                font-size: 12px;
+            }
+
             .occupied {
                 background: #c3d6f1;
                 height: 100%;
@@ -101,7 +105,7 @@
                 <h3 style="font-size: 18px;">STUDENTS</h3>
                 {% if user_role == "beadle" %}
                     {% if not edit_mode %}
-                        <h4><a href="?edit_layout=1">Edit layout</a></h4>
+                        <h4><a href="?edit_layout=1">Change layout</a></h4>
                     {% else %}
                         <form method="post" action="{% url 'courses:course_layout_update' course.id %}">
                             {% csrf_token %}
@@ -111,13 +115,19 @@
                                 <option value="compact">Compact</option>
                                 <option value="exam">Exam</option>
                                 <option value="donut">Donut</option>
-                                <option value="custom">Custom</option> 
+                                <option value="solo">Solo</option>
                             </select>
                            
                             <!-- {{ form.layout_template }} -->
                             <button type="submit">Apply</button>
                         </form>
                     {% endif %}
+
+                    <form method="post" action="{% url 'seat_plan:auto_assign' course.id %}">
+                        {% csrf_token %}
+                        <button name="mode" value="random">🎲 Random Seating</button>
+                        <button name="mode" value="alphabetical">🔠 Alphabetical Seating</button>
+                    </form>
                 {% endif %}
                 {% for student in students %}
                     <div class="student" draggable="true" data-id="{{ student.id }}">
@@ -158,6 +168,11 @@
                             {% endfor %}
                         </tr>
                         {% endfor %}
+                        <tr>
+                            <th colspan="{{ seat_plan.0|length }}" style="text-align: center;">
+                                BACK
+                            </th>
+                        </tr>
                     </table>
                 </section>
             </section>
@@ -236,5 +251,14 @@
         }).then(() => location.reload());
     });
 </script>
+
+<!-- for custom messages from views -->
+{% if messages %}
+    <script>
+        {% for message in messages %}
+            alert("{{ message }}");
+        {% endfor %}
+    </script>
+{% endif %}
 
 {% endblock %}

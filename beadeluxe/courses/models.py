@@ -26,6 +26,9 @@ LAYOUT_TEMPLATES = {
         [1,0,0,0,1],
         [1,0,0,0,1],
         [0,1,1,1,0],
+    ],
+    "solo": [
+        [1],
     ]
 }
 
@@ -72,7 +75,7 @@ class Course(models.Model):
             ("compact", "Compact"),
             ("exam", "Exam"),
             ("donut", "Donut"),
-            ("custom", "Custom"),
+            ("solo", "Solo"),
         ],
         default="lecture"
     )
