@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from .models import Event
 from django.test import TestCase
@@ -36,7 +36,7 @@ class AnnouncementTest(TestCase):
             creator=self.beadle_user,
             title="Test Event",
             description="This is a test event.",
-            date="2024-12-31",
+            date=date(2024, 12, 31),
             category="assessment",
         )
         
@@ -47,9 +47,6 @@ class AnnouncementTest(TestCase):
         self.assertEqual(self.event.course, self.course)
         self.assertEqual(self.event.category, "assessment")
         self.assertEqual(str(self.event), "CSCI42 - Test Event (2024-12-31)")
-        
-    def test_event_date_formatting(self):
-        self.assertEqual(self.event.formatted_date, "December 31, 2024")
     
     def test_student_can_view_calendar(self):
         self.client.login(username="student", password="pass")
@@ -60,6 +57,9 @@ class AnnouncementTest(TestCase):
         self.client.login(username="beadle", password="pass")
         response = self.client.get(f"/courses/{self.course.id}/calendar/")
         self.assertEqual(response.status_code, 200)
+    
+    def test_formatted_date(self):
+        self.assertEqual(self.event.formatted_date(), "December 31, 2024")
     
     def test_valid_view_access(self):
         # Beadle can access
@@ -72,7 +72,7 @@ class AnnouncementTest(TestCase):
         response = self.client.get(f"/courses/{self.course.id}/calendar/")
         self.assertEqual(response.status_code, 200)
 
-        # Professor cannot access
+        # Professor can access
         self.client.login(username="professor", password="pass")
         response = self.client.get(f"/courses/{self.course.id}/calendar/")
         self.assertEqual(response.status_code, 200)
