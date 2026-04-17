@@ -139,6 +139,13 @@ section {
     justify-content: space-between;
 }
 
+.seat {
+    border: 1px solid black;
+    height: 5vw;
+    padding: 1em;
+    width: 5vw;
+}
+
 #app-title {
     padding: 0;
     width: fit-content;
@@ -148,6 +155,22 @@ section {
 
 #beadeluxe {
     font-size: 1.5rem;
+}
+
+#classroom {
+    column-gap: 0;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#classroom #seat_plan {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 5vw 5vw 5vw 5vw 5vw 5vw 5vw 5vw;
+    grid-template-rows: 5vw 5vw 5vw 5vw 5vw;
+    column-gap: 0;
+    row-gap: 5vw;
 }
 
 #not-found {

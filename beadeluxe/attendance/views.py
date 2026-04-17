@@ -10,23 +10,29 @@ from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
+# displays a single user's attendance for all their classes
 class AttendanceView(LoginRequiredMixin, View):
     def get(self, request):
+
+        # get the logged in user's courseuser object
         enrollments = CourseUser.objects.filter(user=request.user)
         attendance_data = []
 
+        # display attendance for each course the user is enrolled in
         for enrollment in enrollments:
             sessions = AttendanceSession.objects.filter(
                 course=enrollment.course
             ).order_by("date")
 
+            # get attendance records
             records = Attendance.objects.filter(course_user=enrollment)
-
             record_map = {r.session_id: r for r in records}
 
+            # so far, no sessions, cuts are 0 by default
             session_rows = []
             cuts = 0
 
+            # per class, check when they were absent
             for session in sessions:
                 record = record_map.get(session.id)
                 status = record.status if record else "absent"
@@ -39,6 +45,7 @@ class AttendanceView(LoginRequiredMixin, View):
                     "status": status
                 })
 
+            # total is the number of sessions
             total = len(sessions)
             percent = ((total - cuts) / total * 100) if total > 0 else 0
 
@@ -55,6 +62,7 @@ class AttendanceView(LoginRequiredMixin, View):
             "attendance_data": attendance_data
         })
 
+# displays a course's attendance sheet
 class CourseAttendanceView(LoginRequiredMixin, View):
     def get(self, request, pk):
         course = Course.objects.get(pk=pk)
@@ -73,6 +81,7 @@ class CourseAttendanceView(LoginRequiredMixin, View):
         # STUDENT
         return self.student_view(request, course, membership)
 
+    # for professors and beadles
     def professor_view(self, request, course):
         role_filter = request.GET.get("role")
 
@@ -84,6 +93,7 @@ class CourseAttendanceView(LoginRequiredMixin, View):
 
         matrix = []
 
+        # per person in the course, create a row with their name, ID number, and attendance
         for person in persons:
             row = {
                 "person": person.user.fullname,
@@ -91,6 +101,7 @@ class CourseAttendanceView(LoginRequiredMixin, View):
                 "attendance": []
             }
 
+            # per class, add a new column to mark attendance
             for session in sessions:
                 record = Attendance.objects.filter(
                     session=session,
