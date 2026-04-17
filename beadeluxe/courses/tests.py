@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
-from .models import Course, CourseUser
+from .models import Course, CourseUser, LAYOUT_TEMPLATES
 from django.urls import reverse
 
 User = get_user_model()
@@ -42,6 +42,34 @@ class TestModels(TestCase):
     
     def test_absolute_url(self):
         self.assertEqual(self.test_course.get_absolute_url(), "/courses/1/")
+
+    def test_layout_auto_generated_on_save(self):
+        course = Course(code="LH 23", name="Lecture Hall", layout_type="lecture")
+        course.save()
+
+        self.assertEqual(course.layout, LAYOUT_TEMPLATES["lecture"])
+
+    def test_layout_matches_selected_type(self):
+        course = Course(code="DIL 12.1", name="Donuts in Life", layout_type="donut")
+        course.save()
+
+        self.assertEqual(course.layout, LAYOUT_TEMPLATES["donut"])
+
+    def test_layout_updates_when_type_changes(self):
+        course = Course(code="CET 67", name="Compact Engineering Tests", layout_type="lecture")
+        course.save()
+
+        course.layout_type = "compact"
+        course.save()
+
+        self.assertEqual(course.layout, LAYOUT_TEMPLATES["compact"])
+
+    def test_generate_layout_returns_correct_template(self):
+        course = Course(code="EE 32", name="Extra-difficult Examinations", layout_type="exam")
+
+        layout = course.generate_layout()
+
+        self.assertEqual(layout, LAYOUT_TEMPLATES["exam"])
 
 
 class TestViews(TestCase):

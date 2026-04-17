@@ -3,13 +3,95 @@ from django.urls import reverse
 from django.conf import settings
 from django.views.generic import DetailView
 
+LAYOUT_TEMPLATES = {
+    "lecture": [
+        [1,1,1,1,0,1,1,1,1],
+        [1,1,1,1,0,1,1,1,1],
+        [1,1,1,1,0,1,1,1,1],
+        [1,1,1,1,0,1,1,1,1],
+    ],
+    "compact": [
+        [1,1,1,1],
+        [1,1,1,1],
+        [1,1,1,1],
+    ],
+    "exam": [
+        [1,0,1,0,1],
+        [0,1,0,1,0],
+        [1,0,1,0,1],
+    ],
+    "donut": [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+    ],
+    "solo": [
+        [1],
+    ]
+}
+
 # Create your models here.
+# class LayoutTemplate(models.Model):
+#     name = models.CharField(max_length=50, unique=True)
+#     layout = models.JSONField()
+
+#     def __str__(self):
+#         return self.name
+
+# class Course(models.Model):
+
+    # layout_template = models.ForeignKey(
+    #     LayoutTemplate,
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True
+    # )
+
+    # layout = models.JSONField(default=list, blank=True)
+
+    # def save(self, *args, **kwargs):
+    #     if self.layout_template:
+    #         self.layout = self.layout_template.layout
+    #     super().save(*args, **kwargs)
+
+    # def generate_layout(self):
+    #     if self.layout_template:
+    #         return self.layout_template.layout
+    #     return self.layout
+
 class Course(models.Model):
     code = models.CharField(max_length=10)
     name = models.CharField(max_length=100)
 
     #basically, there can be more than 1 beadle and 1 professor for each course.
     courseUsers = models.ManyToManyField(settings.AUTH_USER_MODEL, through="CourseUser") 
+
+    layout_type = models.CharField(
+        max_length=50,
+        choices=[
+            ("lecture", "Lecture"),
+            ("compact", "Compact"),
+            ("exam", "Exam"),
+            ("donut", "Donut"),
+            ("solo", "Solo"),
+        ],
+        default="lecture"
+    )
+
+    layout = models.JSONField(default=list, blank=True)
+
+    def save(self, *args, **kwargs):
+        # autofill layout if not custom and layout is empty
+        if self.layout_type != "custom": # and not self.layout:
+            self.layout = LAYOUT_TEMPLATES.get(self.layout_type, [])
+        super().save(*args, **kwargs)
+
+    def generate_layout(self):
+        if self.layout_type != "custom":
+            return LAYOUT_TEMPLATES.get(self.layout_type, [])
+        return self.layout
 
     def __str__(self):
         return '{}: {}'.format(self.code, self.name)

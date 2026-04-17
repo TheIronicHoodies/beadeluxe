@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'user_management',
     'accounts',
     'attendance',
+    'seat_plan',
     'announcements',
     'calendarApp',
 ]
@@ -105,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Singapore'
 
 USE_I18N = True
 

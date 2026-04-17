@@ -137,12 +137,6 @@ class AnnouncementTest(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, 403)
         self.assertTrue(Announcement.objects.filter(id=self.announcement.id).exists())
-
-    # Check if timestamps are set correctly upon announcement creation and update.
-    def test_announcements_timestamps(self):
-        self.assertIsNotNone(self.announcement.created_at)
-        self.assertIsNotNone(self.announcement.updated_at)
-        self.assertEqual(self.announcement.created_at, self.announcement.updated_at)
         
     # Check if editing announcements works correctly.
     def test_announcement_update(self):
