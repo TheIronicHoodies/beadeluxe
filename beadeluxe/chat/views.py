@@ -35,10 +35,31 @@ class MessageView(LoginRequiredMixin, View):
         if not membership or membership.role not in ["student", "beadle"]:
             raise PermissionDenied
         
+        raw_content = request.POST.get("content")
+
+        SWEAR_WORDS = [
+            "fuck",
+            "shit",
+            "bitch",
+            "ass",
+            "nigger",
+            "nigga",
+            "faggot",
+            "fag",
+            "cunt",
+            "damn",
+            "chink",
+            "pussy",
+        ]
+
+        for word in SWEAR_WORDS:
+            if raw_content.find(word) != -1:
+                raw_content = raw_content.replace(word, "****")
+        
         Message.objects.create(
             user=membership,
             course=course,
-            content=request.POST.get("content"),
+            content=raw_content,
             timestamp=request.POST.get("timestamp")
         )
 
