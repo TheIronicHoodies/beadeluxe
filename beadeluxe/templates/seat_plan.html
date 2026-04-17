@@ -10,6 +10,10 @@
                 margin-top: 80px;
             }
             
+            button {
+                font-size: 12px;
+            }
+            
             .seat-layout {
                 display: flex;
                 align-items: flex-start;
@@ -36,7 +40,6 @@
                 border: 1px solid #ddd;
                 cursor: grab;
             }
-
             .student:hover {
                 background: #e7ebf1;
                 transform: translateY(-1px);
@@ -61,21 +64,15 @@
                 vertical-align: middle;
                 padding: 4px;
             }
+            .seat:hover {
+                background: #e7ebf1;
+            }
             .empty {
                 min-width: 90px;
                 min-height: 60px;
                 border: none;
                 visibility: hidden;
             }
-
-            .seat:hover {
-                background: #e7ebf1;
-            }
-
-            button {
-                font-size: 12px;
-            }
-
             .occupied {
                 background: #c3d6f1;
                 height: 100%;
@@ -92,13 +89,11 @@
                 justify-content: center;
                 padding-left: 40px;
             }
-
             #classroom h1 {
                 margin-top: 20px;
                 font-size: 16px;
                 color: #555;
             }
-
         </style>
         <div class="seat-layout">
             <div id="student-panel">
@@ -109,7 +104,7 @@
                     {% else %}
                         <form method="post" action="{% url 'courses:course_layout_update' course.id %}">
                             {% csrf_token %}
-                            
+                            <!-- when adding options, make sure to update this -->
                             <select name="layout_type">
                                 <option value="lecture">Lecture</option>
                                 <option value="compact">Compact</option>
@@ -122,7 +117,6 @@
                             <button type="submit">Apply</button>
                         </form>
                     {% endif %}
-
                     <form method="post" action="{% url 'seat_plan:auto_assign' course.id %}">
                         {% csrf_token %}
                         <button name="mode" value="random">🎲 Random Seating</button>
@@ -138,6 +132,7 @@
                     </div>
                 {% endfor %}
             </div>
+            
             <section id="classroom">
                 <section id="seat_plan">
                     <table>
@@ -150,7 +145,7 @@
                         <tr>
                             
                             {% for cell in row %}
-                                <!-- checks if seat exists (in case of non-rectangular layouts) -->
+                                <!-- checks if seat exists -->
                                 {% if cell.exists %}
                                     <td class="seat"
                                         data-row="{{ forloop.parentloop.counter0 }}"
@@ -252,7 +247,6 @@
     });
 </script>
 
-<!-- for custom messages from views -->
 {% if messages %}
     <script>
         {% for message in messages %}

@@ -23,11 +23,22 @@ class SeatPlanView(LoginRequiredMixin, View):
         course = Course.objects.get(pk=pk)
         membership = get_membership(request.user, course)
 
+        if not membership or membership.role not in ["student", "beadle"]:
+            raise PermissionDenied
+
         # get all students and beadles
-        students = CourseUser.objects.filter(
-            course=course,
-            role__in=["student", "beadle"]
-        )
+        if membership.role == "beadle":
+            students = CourseUser.objects.filter(
+                course=course,
+                role__in=["student", "beadle"]
+            )
+        elif membership.role == "student":
+            students = CourseUser.objects.filter(
+                course=course,
+                user=request.user
+            )
+        else:
+            students = CourseUser.objects.none()
 
         assigned = SeatAssignment.objects.filter(course=course)
 
