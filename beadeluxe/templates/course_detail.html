@@ -60,6 +60,6 @@
         <p><a href="{% url 'announcements:announcement_list' object.course.pk %}">Announcements</a></p>
         <p><a href="{% url 'courses:course_seat_plan' object.course.pk %}">Seat Plan</a></p>
         <p><a href="">Calendar</a></p>
-        <p><a href="{% url 'chat:messages' object.course.pk %}">Group Chat</a></p>
+        <p><a href="{% url 'courses:messages' object.course.pk %}">Group Chat</a></p>
     </nav>
 {% endblock %}

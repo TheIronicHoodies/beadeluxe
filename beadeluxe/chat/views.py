@@ -1,6 +1,5 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
 from django.views.generic import View
 from django.views.decorators.http import require_POST
 from django.contrib.auth import get_user_model
@@ -9,8 +8,8 @@ from .models import Message
 
 # Create your views here.
 class MessageView(LoginRequiredMixin, View):
-    def get(self, request, course_id):
-        course = get_object_or_404(Course, id=course_id)
+    def get(self, request, pk):
+        course = Course.objects.get(pk=pk)
         membership = CourseUser.objects.filter(
             user=request.user,
             course=course
@@ -24,22 +23,20 @@ class MessageView(LoginRequiredMixin, View):
         return render(request, "chat.html", {
             "messages": messages
         })
-    
-    def post(self, request, course_id):
-        course = get_object_or_404(Course, id=course_id)
-        membership = CourseUser.objects.filter(
-            user=request.user,
-            course=course
-        ).first()
 
-        if not membership or membership.role not in ["student", "beadle"]:
-            raise PermissionDenied
+# class CreateMessageView(LoginRequiredMixin, View):
+#     def post(self, request, course_id):
+#         course = Course.objects.get(id=course_id)
+#         membership = CourseUser.objects.filter(
+#             user=request.user,
+#             course=course
+#         ).first()
+
+#         if not membership or membership.role not in ["student", "beadle"]:
+#             raise PermissionDenied
         
-        Message.objects.create(
-            user=membership,
-            course=course,
-            content=request.POST.get("content"),
-            timestamp=request.POST.get("timestamp")
-        )
+#         Message.objects.create(
+#             course=course
+#         )
 
-        return self.get(request, course_id)
+#         return self.get(request, *args, **kwargs)
