@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Seat Plan{% endblock %}
+
+{% block content %}
+    <main>
+        <style>
+            main {
+                margin-top: 80px;
+            }
+            
+            button {
+                font-size: 12px;
+            }
+            
+            .seat-layout {
+                display: flex;
+                align-items: flex-start;
+                margin: 0 auto 40px;
+                width: 90%;
+                max-width: 1400px;
+            }
+            
+            #student-panel {
+                flex: 0 0 240px;
+                min-height: 400px;
+                background: #f6f8fa;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+                margin-bottom: 15px;
+                font-size: 16px;
+            }
+
+            .student {
+                padding: 10px;
+                margin-bottom: 12px;
+                background: white;
+                border: 1px solid #ddd;
+                cursor: grab;
+            }
+            .student:hover {
+                background: #e7ebf1;
+                transform: translateY(-1px);
+            }
+            
+            #seat_plan {
+                width: auto;
+            }
+
+            #seat_plan table {
+                border-spacing: 6px;
+                padding-top: 300px;
+            }
+
+            .seat {
+                min-width: 90px;
+                min-height: 60px;
+                max-width: 90px;
+                max-height: 60px;
+                border: 1px solid #aaa;
+                text-align: center;
+                vertical-align: middle;
+                padding: 4px;
+            }
+            .seat:hover {
+                background: #e7ebf1;
+            }
+            .empty {
+                min-width: 90px;
+                min-height: 60px;
+                border: none;
+                visibility: hidden;
+            }
+            .occupied {
+                background: #c3d6f1;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                padding: 4px;
+            }
+
+            #classroom {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                padding-left: 40px;
+            }
+            #classroom h1 {
+                margin-top: 20px;
+                font-size: 16px;
+                color: #555;
+            }
+        </style>
+        <div class="seat-layout">
+            <div id="student-panel">
+                <h3 style="font-size: 18px;">STUDENTS</h3>
+                {% if user_role == "beadle" %}
+                    {% if not edit_mode %}
+                        <h4><a href="?edit_layout=1">Change layout</a></h4>
+                    {% else %}
+                        <form method="post" action="{% url 'courses:course_layout_update' course.id %}">
+                            {% csrf_token %}
+                            <!-- when adding options, make sure to update this -->
+                            <select name="layout_type">
+                                <option value="lecture">Lecture</option>
+                                <option value="compact">Compact</option>
+                                <option value="exam">Exam</option>
+                                <option value="donut">Donut</option>
+                                <option value="solo">Solo</option>
+                            </select>
+                           
+                            <!-- {{ form.layout_template }} -->
+                            <button type="submit">Apply</button>
+                        </form>
+                    {% endif %}
+                    <form method="post" action="{% url 'seat_plan:auto_assign' course.id %}">
+                        {% csrf_token %}
+                        <button name="mode" value="random">🎲 Random Seating</button>
+                        <button name="mode" value="alphabetical">🔠 Alphabetical Seating</button>
+                    </form>
+                {% endif %}
+                {% for student in students %}
+                    <div class="student" draggable="true" data-id="{{ student.id }}">
+                        {{ student.user.fullname }}
+                        <span style="font-size: 12px; color: gray;">
+                            - {{ student.role }}
+                        </span>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <section id="classroom">
+                <section id="seat_plan">
+                    <table>
+                        <tr>
+                            <th colspan="{{ seat_plan.0|length }}" style="text-align: center;">
+                                FRONT
+                            </th>
+                        </tr>
+                        {% for row in seat_plan %}
+                        <tr>
+                            
+                            {% for cell in row %}
+                                <!-- checks if seat exists -->
+                                {% if cell.exists %}
+                                    <td class="seat"
+                                        data-row="{{ forloop.parentloop.counter0 }}"
+                                        data-col="{{ forloop.counter0 }}">
+
+                                        {% if cell.occupant %}
+                                            <div class="occupied" data-id="{{ cell.occupant.id }}">
+                                                {{ cell.occupant.user.fullname }}
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                {% else %}
+                                    <td class="empty"></td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <th colspan="{{ seat_plan.0|length }}" style="text-align: center;">
+                                BACK
+                            </th>
+                        </tr>
+                    </table>
+                </section>
+            </section>
+        </div>
+    </main>
+
+<script>
+    const updateURL = "{% url 'seat_plan:update_seat_plan' %}";
+    const removeURL = "{% url 'seat_plan:remove_seat' %}";
+    const userRole = "{{ user_role }}";
+    const userCourseId = "{{ user_course_id }}";
+
+    const getCSRFToken = () =>
+        document.cookie.split("; ")
+            .find(row => row.startsWith("csrftoken="))
+            ?.split("=")[1];
+
+    const postData = (url, data) =>
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify(data)
+        });
+
+    // dragging
+    document.addEventListener("dragstart", e => {
+        const student = e.target.closest(".student");
+        if (!student) return;
+
+        // students can only move themselves
+        if (userRole === "student" && student.dataset.id != userCourseId) {
+            alert("You can only edit your own seat assignment.");
+            e.preventDefault();
+            return;
+        }
+
+        e.dataTransfer.setData("id", student.dataset.id);
+    });
+
+    // dropping
+    document.addEventListener("dragover", e => {
+        if (e.target.closest(".seat")) e.preventDefault();
+    });
+
+    document.addEventListener("drop", e => {
+        const seat = e.target.closest(".seat");
+        if (!seat) return;
+
+        e.preventDefault();
+
+        postData(updateURL, {
+            student_id: e.dataTransfer.getData("id"),
+            row: seat.dataset.row,
+            col: seat.dataset.col
+        }).then(() => location.reload());
+    });
+
+    // removing by clicking
+    document.addEventListener("click", e => {
+        const person = e.target.closest(".occupied");
+        if (!person) return;
+
+        // students can only remove themselves
+        if (userRole === "student" && person.dataset.id != userCourseId) {
+            alert("You can only edit your own seat assignment.");
+            return;
+        }
+
+        if (!confirm("Remove this student from their seat?")) return;
+
+        postData(removeURL, {
+            student_id: person.dataset.id
+        }).then(() => location.reload());
+    });
+</script>
+
+{% if messages %}
+    <script>
+        {% for message in messages %}
+            alert("{{ message }}");
+        {% endfor %}
+    </script>
+{% endif %}
+
+{% endblock %}
