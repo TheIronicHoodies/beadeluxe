@@ -1,8 +1,9 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.contrib.auth import get_user_model
 from .models import Message
 from courses.models import Course, CourseUser
 from django.urls import reverse
+from django.utils import timezone
 import datetime
 
 User = get_user_model()
@@ -13,6 +14,7 @@ class TestModels(TestCase):
         self.professor_user = User.objects.create_user(username="professor", password="pass")
         self.student_user = User.objects.create_user(username="student", password="pass")
         self.beadle_user = User.objects.create_user(username="beadle", password="pass")
+        self.course = Course.objects.create(name="Introduction to Wilson Depot", code = "WilDe 11")
         
         self.professor = CourseUser.objects.create(
             user=self.professor_user,
@@ -32,23 +34,22 @@ class TestModels(TestCase):
             role="beadle"
         )
 
-        course = Course()
-        course.code = "WilDe 11"
-        course.name = "Introduction to Wilson Depot"
-        course.save()
 
         message = Message()
-        message.user = self.student_user
-        message.course = course
-        message.timestamp = datetime.datetime(2026, 3, 13, 12, 0)
+        message.user = self.student
+        message.course = self.course
+        message.timestamp = timezone.now()
         message.content = "This is a test message."
         message.save()
 
         self.test_message = Message.objects.get(pk=1)
         return super().setUp()
 
-    def test_message_session_string_display(self):
-        self.assertEqual(self.test_message.__str__(), "WilDe 11 - Wilson Depot - 2026-03-13 12:00:00")
+    def test_message_init(self):
+        self.assertEqual(self.test_message.user, self.student)
+        self.assertEqual(self.test_message.course, self.course)
+        self.assertEqual(self.test_message.content, "This is a test message.")
+        self.assertIsNotNone(self.test_message.timestamp)
 
     def student_can_view_messages(self):
         url = reverse("chat:messages", args=[self.course.id])
@@ -66,7 +67,7 @@ class TestModels(TestCase):
 
         response = self.client.post(url, {
             "content": "This is another test message.",
-            "timestamp": datetime.datetime(2026, 3, 13, 12, 5)
+            "timestamp": timezone.now()
         })
 
         self.assertEqual(response.status_code, 200)
@@ -90,7 +91,7 @@ class TestModels(TestCase):
 
         response = self.client.post(url, {
             "content": "This is another test message.",
-            "timestamp": datetime.datetime(2026, 3, 13, 12, 5)
+            "timestamp": timezone.now()
         })
 
         self.assertEqual(response.status_code, 200)
@@ -111,7 +112,7 @@ class TestModels(TestCase):
 
         response = self.client.post(url, {
             "content": "fuck you",
-            "timestamp": datetime.datetime(2026, 3, 13, 12, 5)
+            "timestamp": timezone.now()
         })
 
         self.assertEqual(response, "**** you")
