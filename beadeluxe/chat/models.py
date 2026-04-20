@@ -33,19 +33,3 @@ class Message(models.Model):
     def __str__(self):
         return f"{self.course.code} - {self.user} - {self.timestamp}"
     
-# class CreateMessageView(LoginRequiredMixin, View):
-#     def post(self, request, course_id):
-#         course = Course.objects.get(id=course_id)
-#         membership = CourseUser.objects.filter(
-#             user=request.user,
-#             course=course
-#         ).first()
-
-#         if not membership or membership.role not in ["student", "beadle"]:
-#             raise PermissionDenied
-        
-#         Message.objects.create(
-#             course=course
-#         )
-
-#         return self.get(request, *args, **kwargs)

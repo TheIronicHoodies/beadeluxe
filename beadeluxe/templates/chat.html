@@ -30,13 +30,39 @@
         </form>
     </section>
     <script language="javascript">
-        var ws_url = 'ws://' + window.location.host + '/ws/ticks/';
-        var ticksSocket = new WebSocket(ws_url);
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
-        ticksSocket.onmessage = function(event) {
-            var data = JSON.parse(event.data);
-            console.log('data', data);
-            // do whatever required with received data ...
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomName
+            + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#texts').value += (data.message + '\n');
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.querySelector('#msg_content').focus();
+        document.querySelector('#msg_content').onkeyup = function(e) {
+            if (e.key === 'Enter') {  // enter, return
+                document.querySelector('#submit').click();
+            }
+        };
+
+        document.querySelector('#submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#msg_content');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInputDom.value = '';
         };
     </script>
 </main>
