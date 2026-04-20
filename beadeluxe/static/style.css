@@ -139,6 +139,13 @@ section {
     justify-content: space-between;
 }
 
+.seat {
+    border: 1px solid black;
+    height: 5vw;
+    padding: 1em;
+    width: 5vw;
+}
+
 #app-title {
     padding: 0;
     width: fit-content;
@@ -151,35 +158,59 @@ section {
 }
 
 #classroom {
+    column-gap: 0;
     display: flex;
     flex-direction: column;
     text-align: center;
+}
+
+#classroom #seat_plan {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 5vw 5vw 5vw 5vw 5vw 5vw 5vw 5vw;
+    grid-template-rows: 5vw 5vw 5vw 5vw 5vw;
+    column-gap: 0;
+    row-gap: 5vw;
+}
+
+#messages {
+    align-items: center;
+    background-color: #aef;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    height: 50vh;
+    margin: 1em;
+    padding: 1em;
+    max-width: 100%;
+    width: 90vw;
+}
+
+#messages * {
+    width: 100%;
+}
+
+#msg_content {
+    flex-grow: 3;
+    max-width: 100%;
+    width: 100%;
+}
+
+#msg_input_group {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    max-width: 100%;
+    width: 100%;
 }
 
 #not-found {
     font-size: 4em;
 }
 
-#seat_plan {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-#seat_plan .half {
-    margin: 1em;
-    padding: 1em;
-}
-
-#seat_plan .half tr {
-    margin-top: 1em;
-}
-
-#seat_plan .half td {
-    border: 1px solid black;
-    height: 5vw;
-    width: 5vw;
+#msg_input_group #submit {
+    width: 10%;
 }
 
 #user-reg {

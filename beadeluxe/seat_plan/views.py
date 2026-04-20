@@ -7,7 +7,7 @@ from courses.models import CourseUser, Course
 
 # Create your views here.
 
-# represents one seating arrangement
+# one seating arrangement
 class SeatPlanView(LoginRequiredMixin, View):
     def get(self, request, pk):
         course = Course.objects.get(pk=pk)
@@ -25,13 +25,16 @@ class SeatPlanView(LoginRequiredMixin, View):
         )
 
         # create the seating matrix
-        matrix = []
-        for i in range(0, 4):
-            row = [None, None, None, None, None, None, None, None]
-            matrix.append(row)
+        matrix = [
+            [None, None, None, None, None, None, None, None],
+            [None, None, None, None, None, None, None, None],
+            [None, None, None, None, None, None, None, None],
+            [None, None, None, None, None, None, None, None],
+            [None, None, None, None, None, None, None, None],
+        ]
 
         return render(request, "seat_plan.html", {
-            "course": course
+            "seat_plan": matrix
         })
         
 class UpdateSeatPlanView(LoginRequiredMixin, View):

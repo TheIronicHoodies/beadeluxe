@@ -16,10 +16,15 @@ class SeatPlan(models.Model):
         blank=True
     )
 
-    seat_plan = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        through = 
-    )
+    sp = [
+        [None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None],
+        [None, None, None, None, None, None, None, None],
+    ]
+
+    seat_plan = sp
 
     def __str__(self):
         return '{}_seat_plan'.format(course.name)
