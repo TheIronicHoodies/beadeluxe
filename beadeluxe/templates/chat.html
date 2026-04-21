@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<!-- TODO: Integrate course data into JSON script below somehow, so that the networking stuff actually recognizes it -->
 {% json_script "course" %}
     {{ message.course }}
 {% endjson_script %}
