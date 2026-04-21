@@ -24,45 +24,46 @@ class MessageView(LoginRequiredMixin, View, WebsocketConsumer):
         messages = course.group_chat.all().order_by("timestamp")
 
         return render(request, "chat.html", {
-            "messages": messages
+            "messages": messages,
+            "course": course
         })
 
-    # def post(self, request, course_id):
-    #     course = get_object_or_404(Course, id=course_id)
-    #     membership = CourseUser.objects.filter(
-    #         user=request.user,
-    #         course=course
-    #     ).first()
+    def post(self, request, course_id):
+        course = get_object_or_404(Course, id=course_id)
+        membership = CourseUser.objects.filter(
+            user=request.user,
+            course=course
+        ).first()
 
-    #     if not membership or membership.role not in ["student", "beadle"]:
-    #         raise PermissionDenied
+        if not membership or membership.role not in ["student", "beadle"]:
+            raise PermissionDenied
         
-    #     raw_content = request.POST.get("content")
+        raw_content = request.POST.get("content")
 
-    #     SWEAR_WORDS = [
-    #         "fuck",
-    #         "shit",
-    #         "bitch",
-    #         "ass",
-    #         "nigger",
-    #         "nigga",
-    #         "faggot",
-    #         "fag",
-    #         "cunt",
-    #         "damn",
-    #         "chink",
-    #         "pussy",
-    #     ]
+        SWEAR_WORDS = [
+            "fuck",
+            "shit",
+            "bitch",
+            "ass",
+            "nigger",
+            "nigga",
+            "faggot",
+            "fag",
+            "cunt",
+            "damn",
+            "chink",
+            "pussy",
+        ]
 
-    #     for word in SWEAR_WORDS:
-    #         if raw_content.find(word) != -1:
-    #             raw_content = raw_content.replace(word, "****")
+        for word in SWEAR_WORDS:
+            if raw_content.find(word) != -1:
+                raw_content = raw_content.replace(word, "****")
         
-    #     Message.objects.create(
-    #         user=membership,
-    #         course=course,
-    #         content=raw_content,
-    #         timestamp=request.POST.get("timestamp")
-    #     )
+        Message.objects.create(
+            user=membership,
+            course=course,
+            content=raw_content,
+            timestamp=request.POST.get("timestamp")
+        )
 
-    #     return self.get(request, course_id)
+        return self.get(request, course_id)

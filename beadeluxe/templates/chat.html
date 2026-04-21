@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% json_script "course" %}
+    {{ message.course }}
+{% endjson_script %}
+
 {% block title %}Messages{% endblock %}
 
 {% block content %}
 <main>
-    <section id="messages">
+    <section id="messages" data-chatroom-course="{{ message.course }}">
         <div id="texts">
             {% for message in messages %}
                 <div class="message">
@@ -30,7 +34,7 @@
         </form>
     </section>
     <script language="javascript">
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const roomName = document.getElementById('messages').dataset.chatroomCourse;
 
         const chatSocket = new WebSocket(
             'ws://'
