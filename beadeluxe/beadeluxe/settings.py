@@ -103,6 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'OPTIONS': {
             'min_length': 8,
         },
+        
+    },
+    {
+        'NAME': 'beadeluxe.validators.CustomPasswordValidator',
     },
 ]
 
