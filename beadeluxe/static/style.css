@@ -21,7 +21,7 @@ footer {
     width: 100vw;
 }
 form button {
-    background-color: none;
+    background-color: white;
     border: 1px solid gray;
     border-radius: 1em;
     margin: 0 1em;
@@ -55,6 +55,7 @@ img{
     border-top-right-radius: 10px;
 }
 main {
+    min-height: 75vh;
     padding: 2em;
 }
 marquee {
@@ -65,6 +66,43 @@ marquee {
 marquee h1 {
     color: gold;
     margin: 0;
+}
+nav {
+    background-color: gold;
+    border-radius: 0 10px 10px 0;
+    color: #000;
+    height: 100%;
+    left: -18vw;
+    overflow-x: hidden;
+    padding: 0.75em;
+    padding-top: 3em;
+    position: fixed;
+    text-align: right;
+    top: 25vh;
+    transition: 0.5s;
+    width: 20vw;
+    z-index: 2;
+}
+
+nav a {
+    color: #000;
+    display: block;
+    font-size: 1em;
+    padding: 1em;
+    text-align: right;
+}
+
+nav a:link {
+    text-decoration: none;
+}
+
+nav a:visited {
+    color: #000;
+    text-decoration: none;
+}
+
+nav:hover {
+    left: 0px;
 }
 section {
     display: flex;
@@ -79,20 +117,8 @@ section {
     border-radius: 1em;
     margin: 1em;
     flex: 1 1 30vw;
-    /* flex: 1 1 90vw; */
-    /* flex: 0 1 30vw; */
-    /* flex: initial; */
     display: flex;
     flex-direction: column;
-    /* max-width: 30vw; */
-    /* min-width: 10px; */
-}
-
-.logout {
-    align-items: center;
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: center;
 }
 
 .create-form {
@@ -111,6 +137,13 @@ section {
     form input {
         width: 25vw;
     }
+}
+
+.logout {
+    align-items: center;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
 }
 
 .message_sender {
@@ -163,6 +196,21 @@ section {
     width: 5vw;
 }
 
+.user_management_link {
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 0;
+    color: blue;
+    margin: 0;
+    padding: 0.5em;
+    text-align: left;
+}
+
+#add_course_helptext {
+    font-size: 0.6em;
+    font-style: italic;
+}
+
 #app-title {
     padding: 0;
     width: fit-content;
@@ -188,6 +236,36 @@ section {
     grid-template-rows: 5vw 5vw 5vw 5vw 5vw;
     column-gap: 0;
     row-gap: 5vw;
+}
+
+#course_creation {
+    background-color: #0bf;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    margin: 1em;
+    padding: 1em;
+    row-gap: 1em;
+    width: 30vw;
+}
+
+#course_creation_form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    input {
+        width: 100%;
+    }
+}
+
+#manage_profile {
+    display: flex;
+    flex-basis: 30vw;
+    flex-direction: column;
+    gap: 0;
+    height: fit-content;
+    margin-top: 1em;
 }
 
 #messages {
