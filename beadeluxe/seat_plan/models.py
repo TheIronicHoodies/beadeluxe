@@ -7,32 +7,18 @@ from courses.models import Course, CourseUser
 # Create your models here.
 
 # represents one seating plan
-class SeatPlan(models.Model):
-    course = models.ForeignKey(
-        Course,
-        on_delete=models.CASCADE,
-        related_name="seat_plan",
-        null=True,
-        blank=True
-    )
+class SeatAssignment(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course_user = models.ForeignKey(CourseUser, on_delete=models.CASCADE)
 
-    sp = [
-        [None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None],
-        [None, None, None, None, None, None, None, None],
-    ]
-
-    seat_plan = sp
+    row = models.PositiveIntegerField()
+    col = models.PositiveIntegerField()
 
     def __str__(self):
-        return '{}_seat_plan'.format(course.name)
+        return f"{self.course_user.user.fullname} - {self.course.name} ({self.row}, {self.col})"
 
-    def get_absolute_url(self):
-        return reverse('seat_plan', args=[str(course.id)])
-    
     class Meta:
-        ordering = ['course']
-        verbose_name = 'seat_plan'
-        verbose_name_plural = 'seat_plans'
+        unique_together = [
+            ("course", "row", "col"), # Only one user per seat
+            ("course_user",) # Only have one seat per course
+        ]

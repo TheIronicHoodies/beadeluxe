@@ -10,23 +10,20 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('announcements', '0001_initial'),
         ('courses', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='courseuser',
-            name='user',
+            model_name='announcement',
+            name='author',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
-            model_name='course',
-            name='courseUsers',
-            field=models.ManyToManyField(through='courses.CourseUser', to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddConstraint(
-            model_name='courseuser',
-            constraint=models.UniqueConstraint(fields=('user', 'course'), name='unique_user_course'),
+            model_name='announcement',
+            name='course',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='announcements', to='courses.course'),
         ),
     ]

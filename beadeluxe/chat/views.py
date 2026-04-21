@@ -53,7 +53,7 @@ class MessageView(LoginRequiredMixin, View):
         ]
 
         for word in SWEAR_WORDS:
-            if raw_content.find(word) != -1:
+            if raw_content.find(word.lower()) != -1:
                 raw_content = raw_content.replace(word, "****")
         
         Message.objects.create(

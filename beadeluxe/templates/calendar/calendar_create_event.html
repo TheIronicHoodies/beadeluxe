@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Event{% endblock %}
+
+{% block content %}
+<main>
+
+    <h1>Create Event</h1>
+
+    <h2>{{ course.code }} - {{ course.name }}</h2>
+
+    <p>
+        <a href="{% url 'calendarApp:calendar' course.id %}">
+            ← Back to Calendar
+        </a>
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <p>
+            <label>Title:</label><br>
+            <input type="text" name="title" required>
+        </p>
+
+        <p>
+            <label>Description:</label><br>
+            <textarea name="description" rows="4" cols="40"></textarea>
+        </p>
+
+        <p>
+            <label>Date:</label><br>
+            <input type="date" name="date" required>
+        </p>
+
+        <p>
+            <label>Category:</label><br>
+            <select name="category" required>
+                <option value="assessment">Assessment</option>
+                <option value="deliverable">Deliverable</option>
+            </select>
+        </p>
+
+        <button type="submit">Create Event</button>
+    </form>
+
+</main>
+{% endblock %}

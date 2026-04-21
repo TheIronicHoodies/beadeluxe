@@ -10,23 +10,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('courses', '0001_initial'),
+        ('calendarApp', '0002_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='courseuser',
-            name='user',
+            model_name='event',
+            name='creator',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='course',
-            name='courseUsers',
-            field=models.ManyToManyField(through='courses.CourseUser', to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddConstraint(
-            model_name='courseuser',
-            constraint=models.UniqueConstraint(fields=('user', 'course'), name='unique_user_course'),
         ),
     ]
