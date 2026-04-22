@@ -418,9 +418,26 @@ section {
     background: #c3d6f1;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 12px;
+}
+
+.seat-profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 4px;
+}
+.seat-profile-pic.default-profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 4px;
+    font-size: 30px;
 }
 
 #seat-plan-page #classroom {
@@ -553,7 +570,7 @@ section {
 }
 
 #courses-page h2{
-    margin-left: 10px;
+    margin-left: 20px;
 }
 
 #course_creation {

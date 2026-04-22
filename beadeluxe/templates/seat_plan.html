@@ -66,7 +66,15 @@
 
                                         {% if cell.occupant %}
                                             <div class="occupied" data-id="{{ cell.occupant.id }}">
-                                                {{ cell.occupant.user.fullname }}
+                                                {% if cell.occupant.user.profile_picture %}
+                                                    <img src="{{ cell.occupant.user.profile_picture.url }}" class="seat-profile-pic">
+                                                {% else %}
+                                                    <div class="seat-profile-pic default-profile-pic">👤</div>
+                                                {% endif %}
+
+                                                <span class="seat-name">
+                                                    {{ cell.occupant.user.fullname }}
+                                                </span>
                                             </div>
                                         {% endif %}
                                     </td>
