@@ -7,12 +7,11 @@
     <main id="seat-plan-page">
         <div class="seat-layout">
             <div id="student-panel">
-                <h1 style="font-size: 30px;">SEAT PLAN</h1>
-                <a href="..">Back to Course</a>
-                <h3 style="font-size: 16px;">STUDENT LIST</h3>
+                <h1>SEAT PLAN</h1>
+                <a href="..">← Back to Course</a>
                 {% if user_role == "beadle" %}
                     {% if not edit_mode %}
-                        <h4><a href="?edit_layout=1">Change layout</a></h4>
+                        <h2><a href="?edit_layout=1">CHANGE LAYOUT</a></h2>
                     {% else %}
                         <form method="post" action="{% url 'courses:course_layout_update' course.id %}">
                             {% csrf_token %}
@@ -35,6 +34,8 @@
                         <button name="mode" value="alphabetical">🔠 Alphabetical Seating</button>
                     </form>
                 {% endif %}
+
+                <h2>STUDENT LIST</h2>
                 {% for student in students %}
                     <div class="student" draggable="true" data-id="{{ student.id }}">
                         {{ student.user.fullname }}

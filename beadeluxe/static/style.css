@@ -222,43 +222,6 @@ section {
     font-size: 1.5rem;
 }
 
-#classroom {
-    column-gap: 0;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-
-#classroom #seat_plan {
-    align-items: center;
-    display: grid;
-    grid-template-columns: 5vw 5vw 5vw 5vw 5vw 5vw 5vw 5vw;
-    grid-template-rows: 5vw 5vw 5vw 5vw 5vw;
-    column-gap: 0;
-    row-gap: 5vw;
-}
-
-#course_creation {
-    background-color: #0bf;
-    border-radius: 1em;
-    display: flex;
-    flex-direction: column;
-    margin: 1em;
-    padding: 1em;
-    row-gap: 1em;
-    width: 30vw;
-}
-
-#course_creation_form {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-
-    input {
-        width: 100%;
-    }
-}
-
 #manage_profile {
     display: flex;
     flex-basis: 30vw;
@@ -345,10 +308,12 @@ section {
     font-weight: bold !important;
 }
 
+
 /* HOME PAGE */
 #home-page h1 {
     font-size: 25px;
 }
+
 
 /* COURSE DETAIL PAGE */
 #course-detail h1{
@@ -364,9 +329,26 @@ section {
 }
 
 /* SEAT PLAN PAGE */
-
 #seat-plan-page {
     margin-top: 80px;
+}
+
+#seat-plan-page h1 {
+    font-size: 30px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+#seat-plan-page h2 {
+    font-size: 18px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#student-panel button{
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 8px;
 }
 
 #seat-plan-page .seat-layout {
@@ -444,9 +426,21 @@ section {
 #seat-plan-page #classroom {
     flex: 1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+
+    text-align: center;
     padding-left: 40px;
 }
+
+#classroom #seat_plan {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 5vw 5vw 5vw 5vw 5vw 5vw 5vw 5vw;
+    grid-template-rows: 5vw 5vw 5vw 5vw 5vw;
+    row-gap: 5vw;
+}
+
 
 /* ATTENDANCE PAGES */
 
@@ -483,6 +477,7 @@ section {
 #attendance-dashboard th:hover {
     background: #c9d8eefa;
 }
+
 
 /* REG PAGES */
 #login-page {
@@ -550,10 +545,34 @@ section {
 }
 
 /* COURSES PAGE */
-#courses-page a:link, a:visited, a:hover, a:active {
+#courses-page a:link, 
+#courses-page a:visited, 
+#courses-page a:hover, 
+#courses-page a:active {
     color: black;
 }
 
 #courses-page h2{
     margin-left: 10px;
+}
+
+#course_creation {
+    background-color: #0bf;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    margin: 1em;
+    padding: 1em;
+    row-gap: 1em;
+    width: 30vw;
+}
+
+#course_creation_form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    input {
+        width: 100%;
+    }
 }
