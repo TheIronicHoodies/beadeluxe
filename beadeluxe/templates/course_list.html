@@ -4,12 +4,12 @@
 {% block title %}Courses{% endblock %}
 
 {% block content %}
-    <section>
-        <h1>Courses</h1>
-        
-        <p>Add a course</p>
+<main>
+    <section id="course_creation">
+        <span id="add_course">Add a new course</span>
+        <span id="add_course_helptext">This creates a new course. If you have not been added to an existing one, kindly ask your beadle for an invite.</span>
 
-        <form action="{% url 'courses:list' %}" method="post">
+        <form action="{% url 'courses:list' %}" method="post" id="course_creation_form">
             {% csrf_token %}
             <label for="course_name">
                 <span>Course Name:</span>
@@ -23,16 +23,17 @@
         </form>
     </section>
     
-    <main class="container">
+    <section class="container">
         {% for courseUser in object_list %}
         <div class="col">
-            <a href="#">
-                <img src="https://placehold.co/600x400" alt="Some sample words">
+            <a href="{{ courseUser.course.get_absolute_url }}">
+                <img src="https://picsum.photos/seed/picsum/400/300" alt="Some sample words">
             </a>
             <h2>
                 <a href="{{ courseUser.course.get_absolute_url }}">{{ courseUser.course }}</a>
             </h2>
         </div>
         {% endfor %}
-    </main>
+    </section>
+</main>
 {% endblock %}

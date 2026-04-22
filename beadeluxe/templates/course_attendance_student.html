@@ -3,39 +3,39 @@
 {% block title %}Course Attendance{% endblock %}
 
 {% block content %}
+<main id="course-attendance" class="attendance-page">
+    <h2>{{ course.code }} - {{ course.name }}</h2>
 
-<h2>{{ course.code }} - {{ course.name }}</h2>
+    <p>
+        Total Sessions: {{ total_sessions }} <br>
+        Cuts (Absences): <strong>{{ cuts }}</strong> <br>
+        Attendance: {{ attendance_percentage }}%
+    </p>
 
-<p>
-    Total Sessions: {{ total_sessions }} <br>
-    Cuts (Absences): <strong>{{ cuts }}</strong> <br>
-    Attendance: {{ attendance_percentage }}%
-</p>
+    <table>
 
-<table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
 
-    <tr>
-        <th>Date</th>
-        <th>Status</th>
-    </tr>
+        {% for session in sessions %}
+        <tr>
+            <td>{{ session.date|date:"m/d/y" }}</td>
 
-    {% for session in sessions %}
-    <tr>
-        <td>{{ session.date|date:"m/d/y" }}</td>
+            <td style="text-align:center;">
+                {% if session.status == "present" %}
+                🟢
+                {% elif session.status == "late" %}
+                🟡
+                {% else %}
+                🔴
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table> <br>
 
-        <td style="text-align:center;">
-            {% if session.status == "present" %}
-            🟢
-            {% elif session.status == "late" %}
-            🟡
-            {% else %}
-            🔴
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table> <br>
-
-<a href="..">Back to Course</a>
-
+    <a href="..">← Back to Course</a>
+</main>
 {% endblock %}

@@ -50,6 +50,10 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
         ctx["object"] = CourseUser.objects.get(user=user, course=course)
         ctx["students"] = CourseUser.objects.filter(course=course, role='student')
         ctx["beadles"] = CourseUser.objects.filter(course=course, role='beadle')
+        ctx["student_count"] = CourseUser.objects.filter(
+            course=course,
+            role__in=["student", "beadle"]
+        ).count()
 
         return ctx
 

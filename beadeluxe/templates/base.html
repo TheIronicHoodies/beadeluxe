@@ -23,12 +23,12 @@
                     </marquee>
                 </a>
             {% if user.is_authenticated %}
-                <form method="POST" action="{% url 'logout' %}">
+                <form method="POST" action="{% url 'logout' %}" id="manage_profile">
                     {% csrf_token %}
-                    <button type="submit">Logout</button><br><br>
-                    <a href="{% url 'user_management:profile-update' username=user.username%}">Update Profile</a><br>
-                    <a href="{% url 'user_management:profile-view' username=user.username%}">View Profile</a><br>
-                    <a href="{% url 'attendance:attendance' %}">Attendance Summary</a><br>
+                    <button type="submit" class="user_management_link">Logout</button>
+                    <a href="{% url 'user_management:profile-update' username=user.username%}" class="user_management_link">Update Profile</a>
+                    <a href="{% url 'user_management:profile-view' username=user.username%}" class="user_management_link">View Profile</a>
+                    <a href="{% url 'attendance:attendance' %}" class="user_management_link">Attendance Summary</a>
                 </form>
             {% else %}
                 <div id="user-reg">

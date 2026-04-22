@@ -4,21 +4,22 @@
 {% block title %}{{ object.course }}{% endblock %}
 
 {% block content %}
-    <main>
+    <main id="course-detail">
         <h1>{{ object.course.name }}</h1>
-        <h2>{{ object.course.code }}</h2>
+        <h2>{{ object.course.code }} - {{object.role|title}}</h2>
 
-        <p><a href="..">Back to Course List</a></p>
+        <p><a href="..">← Back to Course List</a></p>
 
         {% if object.role == 'beadle' %}
-            <p>Add a Member</p>
+            <h3>Add a Member</h3>
             <form action="" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="addMember">
                 <label for="email">
                     <span>Email:</span>
-                    <input type="text" id="email" name="email">
-                </label>
+                    <input type="text" id="email" name="email" style="margin-bottom: 5px;">
+                </label><br>
+
                 <label for="role">
                     <span>Role:</span>
                     <select name="role" id="role">
@@ -30,21 +31,22 @@
                 <input type="submit" value="Submit">
             </form>
 
-            <p>Assign a beadle</p>
+            <h3>Assign a Beadle</h3>
             <form action="" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="assignBeadle">
                 <span>Student:</span>
                 <select name="fullname" id="fullname">
-                    <option value="" disabled selected hidden>-- Select an option --</option>
+                    <option value="" disabled selected hidden>Select a student</option>
                     {% for student in students %}
                     <option value="{{ student }}">{{ student }}</option>
                     {% endfor %}
                 </select>
+
                 <input type="submit" value="Assign">
             </form>
 
-            <p>Students: <span>{{ students.count }}</span></p>
+            <p>Students: <span>{{ student_count }}</span></p>
             
             {% if beadles.count > 1 %}
                 <form action="" method="POST">
@@ -56,10 +58,10 @@
         {% endif %}
     </main>
     <nav>
-        <p><a href="{% url 'courses:course_attendance' object.course.pk %}">Attendance Dashboard</a></p>
-        <p><a href="{% url 'announcements:announcement_list' object.course.pk %}">Announcements</a></p>
-        <p><a href="{% url 'calendarApp:calendar' object.course.pk %}">Calendar</a></p>
-        <p><a href="{% url 'chat:messages' object.course.pk %}">Group Chat</a></p>
-        <p><a href="{% url 'courses:course_seat_plan' object.course.pk %}">Seat Plan</a></p>
+        <a href="{% url 'courses:course_attendance' object.course.pk %}">Attendance Dashboard</a>
+        <a href="{% url 'announcements:announcement_list' object.course.pk %}">Announcements</a>
+        <a href="{% url 'calendarApp:calendar' object.course.pk %}">Calendar</a>
+        <a href="{% url 'chat:messages' object.course.pk %}">Group Chat</a>
+        <a href="{% url 'courses:course_seat_plan' object.course.pk %}">Seat Plan</a>
     </nav>
 {% endblock %}
