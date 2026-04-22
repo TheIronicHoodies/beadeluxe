@@ -6,4 +6,11 @@ media/
 .venv/
 venv
 csci42/
-migrations/*
+**/migrations/
+/beadeluxe/announcements/migrations
+/beadeluxe/attendance/migrations
+/beadeluxe/calendarApp/migrations
+/beadeluxe/chat/migrations
+/beadeluxe/courses/migrations
+/beadeluxe/seat_plan/migrations
+/beadeluxe/user_management/migrations

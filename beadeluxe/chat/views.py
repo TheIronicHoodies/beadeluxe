@@ -22,7 +22,8 @@ class MessageView(LoginRequiredMixin, View):
         messages = course.group_chat.all().order_by("timestamp")
 
         return render(request, "chat.html", {
-            "messages": messages
+            "messages": messages,
+            "course": course,
         })
 
     def post(self, request, course_id):

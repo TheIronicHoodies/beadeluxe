@@ -4,136 +4,145 @@
 {% block title %}Attendance Dashboard{% endblock %}
 
 {% block content %}
+<main id="attendance-dashboard" class="attendance-page">
+    <h1>Attendance Dashboard</h1>
+    <h2>{{ course.code }} - {{ course.name }}</h2>
 
-<h1>{{ course.name }} Attendance</h1>
+    <div style="margin-bottom: 10px;">
+        <a href="?"><button>All</button></a>
+        <a href="?role=student">
+            <button 
+                {% if current_role == "student" %}
+                    style="font-weight:bold;"
+                {% endif %}>
+                Students
+            </button>
+        </a>
 
-<div style="margin-bottom: 10px;">
-    <a href="?"><button>All</button></a>
-    <a href="?role=student">
-        <button {% if current_role == "student" %}style="font-weight:bold;"{% endif %}>
-            Students
-        </button>
-    </a>
+        <a href="?role=professor">
+            <button 
+                {% if current_role == "professor" %}
+                    style="font-weight:bold;"
+                {% endif %}>
+                Professors
+            </button>
+        </a>
 
-    <a href="?role=professor">
-        <button {% if current_role == "professor" %}style="font-weight:bold;"{% endif %}>
-            Professors
-        </button>
-    </a>
-
-    <a href="?role=beadle">
-        <button {% if current_role == "beadle" %}style="font-weight:bold;"{% endif %}>
-            Beadles
-        </button>
-    </a>
-</div>
-
-<table border="1">
-    <tr>
-        <th>Name</th>
-
-        <!-- Session deletion / date tag -->
-        {% for session in sessions %}
-            <th>
-                <form method="POST" action="{% url 'attendance:delete_session' session.id %}">
-                {% csrf_token %}
-
-                <button 
-                    type="submit" 
-                    onclick="return confirm('Delete this session and associated attendance records?')"
-                >
-                    {{ session.date|date:"m/d" }}
-                </button>
-
-                </form>
-            </th>
-        {% endfor %}
-
-        <!-- Session creation button -->
-        <th>
-            <button onclick="openModal()"> + </button>
-        </th>
-    </tr>
-
-    {% for row in attendance_matrix %}
-    <tr>
-        <td>{{ row.person }}</td>
-        {% for cell in row.attendance %}
-            <td style="text-align: center;">
-                <form method="POST" action="{% url 'attendance:update_attendance' %}">
-                {% csrf_token %}
-
-                <input type="hidden" name="course_user_id" value="{{ row.course_user_id }}">
-                <input type="hidden" name="session_id" value="{{ cell.session_id }}">
-
-                <select name="status" onchange="this.form.submit()">
-
-                    <option value="present" {% if cell.status == "present" %}selected{% endif %}>
-                    🟢
-                    </option>
-
-                    <option value="late" {% if cell.status == "late" %}selected{% endif %}>
-                    🟡
-                    </option>
-
-                    <option value="absent" {% if cell.status == "absent" %}selected{% endif %}>
-                    🔴
-                    </option>
-
-                </select>
-                </form>
-            </td>
-        {% endfor %}
-
-        <!-- Empty for td for use by the session creation button -->
-        <td></td>
-
-        </tr>
-    {% endfor %}
-</table>
-
-<!-- Modal window and content -->
-<div id="sessionModal" class="modal">
-    <div class="modal-content">
-        <h3>Create Session</h3>
-        <form method="POST" action="{% url 'attendance:add_session' course.id %}">
-        {% csrf_token %}
-
-        <input type="date" name="session_date" id="sessionDate" required>
-
-        <div class="modal-buttons">
-            <button type="submit">Add</button>
-            <button type="button" onclick="closeModal()">Cancel</button>
-        </div>
-        </form>
+        <a href="?role=beadle">
+            <button 
+                {% if current_role == "beadle" %}
+                    style="font-weight:bold;"
+                {% endif %}>
+                Beadles
+            </button>
+        </a>
     </div>
-</div>
 
-<!-- Script for the calendar menu for the session creation button -->
-<script>
-    function openModal() {
-        const modal = document.getElementById("sessionModal")
-        const dateInput = document.getElementById("sessionDate")
+    <table>
+        <tr>
+            <th>Name</th>
 
-        modal.style.display = "block"
-        dateInput.focus()
-    }
+            <!-- Session deletion / date tag -->
+            {% for session in sessions %}
+                <th>
+                    <form method="POST" action="{% url 'attendance:delete_session' session.id %}">
+                    {% csrf_token %}
 
-    function closeModal() {
-        document.getElementById("sessionModal").style.display = "none"
-    }
+                    <button 
+                        type="submit" 
+                        onclick="return confirm('Delete this session and associated attendance records?')">
+                        {{ session.date|date:"m/d" }}
+                    </button>
 
-    // Close modal if clicking outside
-    window.onclick = function(event) {
-        const modal = document.getElementById("sessionModal")
-        if (event.target === modal) {
-            modal.style.display = "none"
+                    </form>
+                </th>
+            {% endfor %}
+
+            <!-- Session creation button -->
+            <th>
+                <button onclick="openModal()"> + </button>
+            </th>
+        </tr>
+
+        {% for row in attendance_matrix %}
+        <tr>
+            <td>{{ row.person }}</td>
+            {% for cell in row.attendance %}
+                <td class="cell-center">
+                    <form method="POST" action="{% url 'attendance:update_attendance' %}">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="course_user_id" value="{{ row.course_user_id }}">
+                    <input type="hidden" name="session_id" value="{{ cell.session_id }}">
+
+                    <select name="status" onchange="this.form.submit()">
+
+                        <option value="present" {% if cell.status == "present" %}selected{% endif %}>
+                        🟢
+                        </option>
+
+                        <option value="late" {% if cell.status == "late" %}selected{% endif %}>
+                        🟡
+                        </option>
+
+                        <option value="absent" {% if cell.status == "absent" %}selected{% endif %}>
+                        🔴
+                        </option>
+
+                    </select>
+                    </form>
+                </td>
+            {% endfor %}
+
+            <!-- Empty for td for use by the session creation button -->
+            <td></td>
+
+            </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Modal window and content -->
+    <div id="sessionModal" class="modal">
+        <div class="modal-content">
+            <h3>Create Session</h3>
+            <form method="POST" action="{% url 'attendance:add_session' course.id %}">
+            {% csrf_token %}
+
+            <input type="date" name="session_date" id="sessionDate" required>
+
+            <div class="modal-buttons">
+                <button type="submit">Add</button>
+                <button type="button" onclick="closeModal()">Cancel</button>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script for the calendar menu for the session creation button -->
+    <script>
+        function openModal() {
+            const modal = document.getElementById("sessionModal")
+            const dateInput = document.getElementById("sessionDate")
+
+            modal.style.display = "block"
+            dateInput.focus()
         }
-    }
-</script>
 
-<br>
+        function closeModal() {
+            document.getElementById("sessionModal").style.display = "none"
+        }
 
-<a href="..">Back to Course</a>
+        // Close modal if clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById("sessionModal")
+            if (event.target === modal) {
+                modal.style.display = "none"
+            }
+        }
+    </script>
 
+    <br>
+
+    <a href="..">← Back to Course</a>
+</main>
 {% endblock %}

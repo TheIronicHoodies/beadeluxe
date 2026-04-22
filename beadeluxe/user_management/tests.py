@@ -82,7 +82,7 @@ class CredentialTest(TestCase):
 
 
 """Class for testing if password reset flow works as expected"""
-class PasswordResetTest(TestCase):
+class UserTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username="collin",
@@ -126,7 +126,7 @@ class PasswordResetTest(TestCase):
         # Check logins with old and new passwords
         self.assertTrue(self.client.login(username="collin", password="NewSecret123!"))
         self.assertFalse(self.client.login(username="collin", password="secret123"))
-
+                
 class ProfileViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -149,7 +149,6 @@ class ProfileViewTest(TestCase):
         self.assertContains(response, "he/him")
         self.assertContains(response, "collin@example.com")
         self.assertContains(response, "+6591258565")
-
-        
+ 
 
         

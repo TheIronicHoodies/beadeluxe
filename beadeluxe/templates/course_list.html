@@ -4,7 +4,7 @@
 {% block title %}Courses{% endblock %}
 
 {% block content %}
-<main>
+<main id="courses-page">
     <section id="course_creation">
         <span id="add_course">Add a new course</span>
         <span id="add_course_helptext">This creates a new course. If you have not been added to an existing one, kindly ask your beadle for an invite.</span>
@@ -26,8 +26,8 @@
     <section class="container">
         {% for courseUser in object_list %}
         <div class="col">
-            <a href="#">
-                <img src="https://placehold.co/600x400" alt="Some sample words">
+            <a href="{{ courseUser.course.get_absolute_url }}">
+                <img src="https://picsum.photos/seed/picsum/400/300" alt="Some sample words">
             </a>
             <h2>
                 <a href="{{ courseUser.course.get_absolute_url }}">{{ courseUser.course }}</a>

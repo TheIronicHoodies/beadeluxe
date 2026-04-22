@@ -73,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'home.context_processors.greeting',
             ],
         },
     },
@@ -98,7 +99,16 @@ DATABASES = {
 AUTH_USER_MODEL = 'user_management.CustomUser'
 
 AUTH_PASSWORD_VALIDATORS = [
-
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        },
+        
+    },
+    {
+        'NAME': 'beadeluxe.validators.CustomPasswordValidator',
+    },
 ]
 
 

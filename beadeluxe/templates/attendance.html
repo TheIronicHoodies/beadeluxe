@@ -3,13 +3,18 @@
 {% block title %}Attendance Summary{% endblock %}
 
 {% block content %}
-
-{% for course_data in attendance_data %}
-
-<div id="attendance-summary">
-    <h3>
+<main id="attendance-summary" class="attendance-page">
+    <h1>Attendance Summary</h1>
+    <a href="{% url 'home' %}">Back to Home</a><br><br>
+    
+    {% for course_data in attendance_data %}
+    <h2>
         {{ course_data.course.code }} - {{ course_data.course.name }} ({{ course_data.role|title }})
-    </h3>
+    </h2>
+
+    <a href="{% url 'courses:course_attendance' course_data.course.id %}">
+        → To course attendance
+    </a>
 
     <p>
         Total Sessions: {{ course_data.total_sessions }} <br>
@@ -38,8 +43,6 @@
         </tr>
         {% endfor %}
     </table>
-</div>
-
-
-{% endfor %}
+    {% endfor %}
+</main>
 {% endblock %}

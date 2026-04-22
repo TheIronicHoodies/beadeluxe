@@ -222,43 +222,6 @@ section {
     font-size: 1.5rem;
 }
 
-#classroom {
-    column-gap: 0;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-
-#classroom #seat_plan {
-    align-items: center;
-    display: grid;
-    grid-template-columns: 5vw 5vw 5vw 5vw 5vw 5vw 5vw 5vw;
-    grid-template-rows: 5vw 5vw 5vw 5vw 5vw;
-    column-gap: 0;
-    row-gap: 5vw;
-}
-
-#course_creation {
-    background-color: #0bf;
-    border-radius: 1em;
-    display: flex;
-    flex-direction: column;
-    margin: 1em;
-    padding: 1em;
-    row-gap: 1em;
-    width: 30vw;
-}
-
-#course_creation_form {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-
-    input {
-        width: 100%;
-    }
-}
-
 #manage_profile {
     display: flex;
     flex-basis: 30vw;
@@ -343,4 +306,290 @@ section {
 
 .strong {
     font-weight: bold !important;
+}
+
+
+/* HOME PAGE */
+#home-page h1 {
+    font-size: 25px;
+}
+
+
+/* COURSE DETAIL PAGE */
+#course-detail h1{
+    font-size: 30px;
+}
+
+#course-detail h2{
+    font-size: 25px;
+}
+
+#course-detail h3{
+    font-size: 18px;
+}
+
+/* SEAT PLAN PAGE */
+#seat-plan-page {
+    margin-top: 80px;
+}
+
+#seat-plan-page h1 {
+    font-size: 30px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+#seat-plan-page h2 {
+    font-size: 18px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#student-panel button{
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+#seat-plan-page .seat-layout {
+    display: flex;
+    align-items: flex-start;
+    margin: 0 auto 40px;
+    width: 90%;
+    max-width: 1400px;
+}
+
+#seat-plan-page .seat-layout button {
+    font-size: 12px;
+}
+
+/* For the panel beside the seat plan table */
+#seat-plan-page #student-panel {
+    flex: 0 0 240px;
+    min-height: 400px;
+    background: #f6f8fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+#seat-plan-page .student {
+    padding: 10px;
+    margin-bottom: 12px;
+    background: white;
+    border: 1px solid #ddd;
+    cursor: grab;
+}
+#seat-plan-page .student:hover {
+    background: #e7ebf1;
+    transform: translateY(-1px);
+}
+
+#seat-plan-page #seat_plan {
+    width: auto;
+}
+#seat-plan-page #seat_plan table {
+    border-spacing: 6px;
+    padding-top: 300px;
+}
+
+#seat-plan-page .seat {
+    min-width: 90px;
+    min-height: 60px;
+    border: 1px solid #aaa;
+    text-align: center;
+    vertical-align: middle;
+    padding: 4px;
+}
+#seat-plan-page .seat:hover {
+    background: #e7ebf1;
+}
+
+/* Seat states: */
+#seat-plan-page .empty { 
+    min-width: 90px;
+    min-height: 60px;
+    border: none;
+    visibility: hidden;
+}
+#seat-plan-page .occupied {
+    background: #c3d6f1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.seat-profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 4px;
+}
+.seat-profile-pic.default-profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 4px;
+    font-size: 30px;
+}
+
+#seat-plan-page #classroom {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    text-align: center;
+    padding-left: 40px;
+}
+
+#classroom #seat_plan {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 5vw 5vw 5vw 5vw 5vw 5vw 5vw 5vw;
+    grid-template-rows: 5vw 5vw 5vw 5vw 5vw;
+    row-gap: 5vw;
+}
+
+
+/* ATTENDANCE PAGES */
+
+/* Shared table styling */
+.attendance-page table {
+    border-collapse: collapse;
+    border: 1px solid #aaa;
+}
+.attendance-page th,
+.attendance-page td {
+    border: 1px solid #aaa;
+    padding: 8px;
+}
+
+.attendance-page h1{
+    font-size: 25px;
+}
+
+#attendance-dashboard select {
+    text-align: center;
+    border: none;
+    background: transparent;
+    width: 100%;
+    margin-bottom: -15px;
+}
+
+#attendance-dashboard th button {
+    border: none;
+    background: transparent;
+    margin-bottom: -15px;
+}
+
+#attendance-dashboard td:hover,
+#attendance-dashboard th:hover {
+    background: #c9d8eefa;
+}
+
+
+/* REG PAGES */
+#login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.login-card {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 320px;
+    text-align: center;
+}
+.login-card h2 {
+    margin-bottom: 20px;
+}
+
+.inputs {
+    margin-bottom: 15px;
+    text-align: left;
+}
+.inputs label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+.inputs input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #0000001a;
+    border-radius: 6px;
+}
+
+.login-btn {
+    width: 87%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    background: #488edfe5;
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+.login-btn:hover {
+    background: #357abd;
+}
+
+.forgot-link {
+    display: block;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.error-box {
+    background: #f7bfc865;
+    color: #b00020;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+/* COURSES PAGE */
+#courses-page a:link, 
+#courses-page a:visited, 
+#courses-page a:hover, 
+#courses-page a:active {
+    color: black;
+}
+
+#courses-page h2{
+    margin-left: 20px;
+}
+
+#course_creation {
+    background-color: #0bf;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    margin: 1em;
+    padding: 1em;
+    row-gap: 1em;
+    width: 30vw;
+}
+
+#course_creation_form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    input {
+        width: 100%;
+    }
 }

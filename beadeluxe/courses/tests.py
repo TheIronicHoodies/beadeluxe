@@ -332,7 +332,7 @@ class TestCoursesDetailPage(TestCase):
         )
         url = reverse('courses:detail', args=[1])
         response = self.client.get(url)
-        self.assertNotInHTML('<p>Add a Member</p>', response.text)
+        self.assertNotInHTML('<h3>Add a Member</h3>', response.text)
 
     def test_display_if_one_beadle(self):
         self.client.login(
@@ -341,7 +341,7 @@ class TestCoursesDetailPage(TestCase):
         )
         url = reverse('courses:detail', args=[1])
         response = self.client.get(url)
-        self.assertInHTML('<p>Add a Member</p>', response.text)
+        self.assertInHTML('<h3>Add a Member</h3>', response.text)
         self.assertNotInHTML('<input type="submit" value="Resign">', response.text)
     
     def test_display_if_two_beadles(self):
