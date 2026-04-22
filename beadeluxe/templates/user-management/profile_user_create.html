@@ -4,8 +4,9 @@
 {% block title %} Profile Creation {% endblock %}
 
 {% block content %}
-    <main>
+    <main id="register">
         <form method="POST" id="create-user" enctype="multipart/form-data">
+            <h1>Create New Profile</h1>
             {% csrf_token %}
 
             {{ form.non_field_errors }}

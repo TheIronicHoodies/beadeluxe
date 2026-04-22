@@ -222,6 +222,20 @@ section {
     font-size: 1.5rem;
 }
 
+#create-user {
+    background-color: #0bf;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    margin: 1em;
+    padding: 1em;
+    width: 30vw;
+
+    div > * {
+        width: 100%;
+    }
+}
+
 #manage_profile {
     display: flex;
     flex-basis: 30vw;
@@ -270,6 +284,12 @@ section {
 
 #not-found {
     font-size: 4em;
+}
+
+#register {
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 #texts {
