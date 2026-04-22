@@ -4,11 +4,10 @@
 {% block title %}{{ object.course }}{% endblock %}
 
 {% block content %}
+    <a href=".." id="return_to_course_list">← Back to Course List</a>
     <main id="course-detail">
         <h1>{{ object.course.name }}</h1>
-        <h2>{{ object.course.code }} - {{object.role|title}}</h2>
-
-        <p><a href="..">← Back to Course List</a></p>
+        <p id="course-role">{{ object.course.code }} - {{object.role|title}}</p>
 
         {% if object.role == 'beadle' %}
             <h3>Add a Member</h3>

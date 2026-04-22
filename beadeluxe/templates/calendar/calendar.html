@@ -111,4 +111,11 @@
     </table>
 
 </main>
+<nav>
+        <a href="{% url 'courses:course_attendance' object.course.pk %}">Attendance Dashboard</a>
+        <a href="{% url 'announcements:announcement_list' object.course.pk %}">Announcements</a>
+        <a href="{% url 'calendarApp:calendar' object.course.pk %}">Calendar</a>
+        <a href="{% url 'chat:messages' object.course.pk %}">Group Chat</a>
+        <a href="{% url 'courses:course_seat_plan' object.course.pk %}">Seat Plan</a>
+    </nav>
 {% endblock %}

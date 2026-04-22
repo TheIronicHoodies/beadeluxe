@@ -211,6 +211,32 @@ section {
     font-style: italic;
 }
 
+#announcement {
+    background-color: #0bf;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+
+    h3 {
+        line-height: normal;
+    }
+}
+
+#announcement_delete {
+    background: transparent;
+    border: none;
+    color: blue;
+    display: inline;
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+}
+
+#announcement_delete_form {
+    display: inline;
+}
+
 #app-title {
     padding: 0;
     width: fit-content;
@@ -233,6 +259,17 @@ section {
 
     div > * {
         width: 100%;
+    }
+}
+
+#course-detail {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+
+    #course-role {
+        font-size: 1.25em;
+        line-height: normal;
     }
 }
 
@@ -290,6 +327,10 @@ section {
     align-items: center;
     display: flex;
     justify-content: center;
+}
+
+#return_to_course_list {
+    margin: 1em;
 }
 
 #texts {

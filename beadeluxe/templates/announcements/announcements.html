@@ -17,15 +17,15 @@
 
     {% if announcements %}
         {% for announcement in announcements %}
-            <div>
+            <div id="announcement">
                 {% if role == "beadle" or role == "professor" %}
                     <p>
                         <a href="{% url 'announcements:announcement_update' course.id announcement.id %}">Edit</a>
                         |
                         <form action="{% url 'announcements:announcement_delete' course.id announcement.id %}" 
-                              method="POST" style="display:inline;">
+                              method="POST" id="announcement_delete_form">
                             {% csrf_token %}
-                            <button type="submit" onclick="return confirm('Delete this announcement?');">
+                            <button type="submit" id="announcement_delete" onclick="return confirm('Delete this announcement?');">
                                 Delete
                             </button>
                         </form>
@@ -51,4 +51,11 @@
     {% endif %}
 
 </main>
+<nav>
+        <a href="{% url 'courses:course_attendance' object.course.pk %}">Attendance Dashboard</a>
+        <a href="{% url 'announcements:announcement_list' object.course.pk %}">Announcements</a>
+        <a href="{% url 'calendarApp:calendar' object.course.pk %}">Calendar</a>
+        <a href="{% url 'chat:messages' object.course.pk %}">Group Chat</a>
+        <a href="{% url 'courses:course_seat_plan' object.course.pk %}">Seat Plan</a>
+    </nav>
 {% endblock %}
