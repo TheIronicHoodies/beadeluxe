@@ -345,6 +345,24 @@ section {
     font-weight: bold !important;
 }
 
+/* HOME PAGE */
+#home-page h1 {
+    font-size: 25px;
+}
+
+/* COURSE DETAIL PAGE */
+#course-detail h1{
+    font-size: 30px;
+}
+
+#course-detail h2{
+    font-size: 25px;
+}
+
+#course-detail h3{
+    font-size: 18px;
+}
+
 /* SEAT PLAN PAGE */
 
 #seat-plan-page {

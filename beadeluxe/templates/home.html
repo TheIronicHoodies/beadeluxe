@@ -4,14 +4,15 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<main>
-    <p>Welcome to Beadeluxe, your one-of-a-kind beadle management system!</p>
+<main id = "home-page">
+    <h1>Welcome to Beadeluxe!</h1>
     {% if user.is_authenticated %}
-    <ul>
-        <li><a href="{% url 'courses:list' %}">Courses</a></li>
-    </ul>
+        <p>{{ greeting }}, {{ user.nickname|default:user.username }}!</p>
+        <ul>
+            <li><a href="{% url 'courses:list' %}">Courses</a></li>
+        </ul>
     {% else %}
-    <p>Please <a href="{% url 'login' %}">log in</a> to continue.</p>
+        <p>Please <a href="{% url 'login' %}">log in</a> to continue.</p>
     {% endif %}
 </main>
 {% endblock %}

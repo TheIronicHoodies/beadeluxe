@@ -5,6 +5,16 @@
 
 {% block content %}
 <main>
+    <h1>Welcome to Beadeluxe!</h1>
+    {% if user.is_authenticated %}
+        <p>{{ greeting }}, {{ user.nickname|default:user.username }}!</p>
+        <ul>
+            <li><a href="{% url 'courses:list' %}">Courses</a></li>
+        </ul>
+    {% else %}
+        <p>Please <a href="{% url 'login' %}">log in</a> to continue.</p>
+    {% endif %}
+    
     <section id="course_creation">
         <span id="add_course">Add a new course</span>
         <span id="add_course_helptext">This creates a new course. If you have not been added to an existing one, kindly ask your beadle for an invite.</span>

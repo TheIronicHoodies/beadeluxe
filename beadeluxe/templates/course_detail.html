@@ -4,14 +4,14 @@
 {% block title %}{{ object.course }}{% endblock %}
 
 {% block content %}
-    <main>
+    <main id="course-detail">
         <h1>{{ object.course.name }}</h1>
-        <h2>{{ object.course.code }}</h2>
+        <h2>{{ object.course.code }} - {{object.role|title}}</h2>
 
         <p><a href="..">Back to Course List</a></p>
 
         {% if object.role == 'beadle' %}
-            <p>Add a Member</p>
+            <h3>Add a Student</h3>
             <form action="" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="addMember">
@@ -30,7 +30,7 @@
                 <input type="submit" value="Submit">
             </form>
 
-            <p>Assign a beadle</p>
+            <h3>Assign a Beadle</h3>
             <form action="" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="assignBeadle">
