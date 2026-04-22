@@ -50,21 +50,6 @@ class SeatPlanView(LoginRequiredMixin, View):
 
         layout = course.layout or []
 
-        # matrix = []
-
-        # for r, row_layout in enumerate(layout):
-        #     row = []
-        #     for c, seat_exists in enumerate(row_layout):
-        #         if seat_exists:
-        #             occupant = seat_map.get((r, c))
-        #         else:
-        #             occupant = None  # empty space
-        #         row.append({
-        #             "exists": seat_exists,
-        #             "occupant": occupant
-        #         })
-        #     matrix.append(row)
-
         matrix = [
             [
                 {
@@ -86,7 +71,6 @@ class SeatPlanView(LoginRequiredMixin, View):
             "user_role": membership.role,
             "user_course_id": membership.id,
             "edit_mode": edit_mode,
-            # "form": CourseLayoutForm(instance=course),
         })
 
 class UpdateSeatPlanView(LoginRequiredMixin, View):

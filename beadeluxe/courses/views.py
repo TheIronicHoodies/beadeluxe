@@ -84,14 +84,6 @@ class CourseLayoutUpdateView(LoginRequiredMixin, View):
     def post(self, request, pk):
         course = Course.objects.get(pk=pk)
 
-        # Template, database based approach
-        # template_id = request.POST.get("layout_template")
-        # course.layout_template_id = template_id
-        # course.layout = course.generate_layout()
-
-        # SeatAssignment.objects.filter(course=course).delete()
-        # course.save()
-
         layout_type = request.POST.get("layout_type")
         course.layout_type = layout_type
 
