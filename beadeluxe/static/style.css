@@ -429,3 +429,39 @@ section {
     justify-content: center;
     padding-left: 40px;
 }
+
+/* ATTENDANCE PAGES */
+
+/* Shared table styling */
+.attendance-page table {
+    border-collapse: collapse;
+    border: 1px solid #aaa;
+}
+.attendance-page th,
+.attendance-page td {
+    border: 1px solid #aaa;
+    padding: 8px;
+}
+
+.attendance-page h1{
+    font-size: 25px;
+}
+
+#attendance-dashboard select {
+    text-align: center;
+    border: none;
+    background: transparent;
+    width: 100%;
+    margin-bottom: -15px;
+}
+
+#attendance-dashboard th button {
+    border: none;
+    background: transparent;
+    margin-bottom: -15px;
+}
+
+#attendance-dashboard td:hover,
+#attendance-dashboard th:hover {
+    background: #c9d8eefa;
+}
