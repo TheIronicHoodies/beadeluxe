@@ -11,14 +11,15 @@
         <p><a href="..">Back to Course List</a></p>
 
         {% if object.role == 'beadle' %}
-            <h3>Add a Student</h3>
+            <h3>Add a Member</h3>
             <form action="" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="addMember">
                 <label for="email">
                     <span>Email:</span>
-                    <input type="text" id="email" name="email">
-                </label>
+                    <input type="text" id="email" name="email" style="margin-bottom: 5px;">
+                </label><br>
+
                 <label for="role">
                     <span>Role:</span>
                     <select name="role" id="role">
@@ -36,11 +37,12 @@
                 <input type="hidden" name="form_type" value="assignBeadle">
                 <span>Student:</span>
                 <select name="fullname" id="fullname">
-                    <option value="" disabled selected hidden>-- Select an option --</option>
+                    <option value="" disabled selected hidden>Select a student</option>
                     {% for student in students %}
                     <option value="{{ student }}">{{ student }}</option>
                     {% endfor %}
                 </select>
+
                 <input type="submit" value="Assign">
             </form>
 
