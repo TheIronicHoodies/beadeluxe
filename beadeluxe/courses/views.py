@@ -22,6 +22,9 @@ class CourseListView(LoginRequiredMixin, ListView):
         c.code = request.POST.get('course_code')
         c.save()
 
+        c.layout_type = "lecture"
+        c.generate_layout()
+
         #Whoever created the course is beadle
         cu = CourseUser()
         cu.course = c
@@ -29,6 +32,8 @@ class CourseListView(LoginRequiredMixin, ListView):
         cu.role = "beadle"
         cu.save()
         return self.get(request, *args, **kwargs)
+    
+        
     
     def get_context_data(self, **kwargs):
         ctx = super(CourseListView, self).get_context_data(**kwargs)
