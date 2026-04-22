@@ -6,3 +6,4 @@ media/
 .venv/
 venv
 csci42/
+migrations/*
